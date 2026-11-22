@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>AROI MARKET! ตลาดอร่อย — Thai Food Card Party</title>
+<meta name="description" content="AROI MARKET! ตลาดอร่อย — เกมการ์ดดราฟต์ธีมอาหารไทยสุดน่ารัก เล่น 2–5 คน ออฟไลน์ บอท และออนไลน์ P2P">
+<meta name="theme-color" content="#0a1330">
+<style>
+:root{
+  --navy:#0a1330; --navy2:#101d47; --indigo:#22336f; --indigo2:#31458c;
+  --cream:#fff5e6; --cream2:#f8e6c8; --coral:#ff7d6d; --coral2:#ffa294;
+  --gold:#ffc861; --gold2:#ffe6b0; --mint:#7fe0c0; --pink:#ffb3cd;
+  --cardW: clamp(58px, min(16vw, 15vh), 96px);
+  --miniW: clamp(31px, min(8.4vw, 7.8vh), 48px);
+  --tileW: clamp(19px, min(5.4vw, 5vh), 28px);
+  --r:20px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{
+  font-family:"Trebuchet MS","Segoe UI",system-ui,-apple-system,"Noto Sans Thai","Leelawadee UI",sans-serif;
+  background:linear-gradient(180deg,#050b20 0%,var(--navy) 34%,#151b40 66%,#30202c 100%);
+  color:var(--cream);user-select:none;-webkit-user-select:none;
+}
+/* ============ BACKGROUND ============ */
+#petals,#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#petals{z-index:1}#fx{z-index:60}
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+#bg .glowfield{position:absolute;inset:0;background:
+  radial-gradient(58% 38% at 16% 18%,rgba(255,150,90,.17),transparent 70%),
+  radial-gradient(48% 38% at 84% 24%,rgba(255,120,110,.14),transparent 70%),
+  radial-gradient(90% 46% at 50% 102%,rgba(255,180,110,.18),transparent 70%)}
+#bg .moon{position:absolute;top:5%;right:9%;width:clamp(86px,17vw,170px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 36% 34%,#fffdf3,#ffeec4 55%,#f6d79a 78%,#e9c483);
+  box-shadow:0 0 72px 26px rgba(255,226,163,.2),0 0 170px 62px rgba(120,150,255,.12);animation:moonpulse 9s ease-in-out infinite}
+@keyframes moonpulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.13)}}
+#bg .bunting{position:absolute;top:8px;left:-1%;right:-1%;display:flex;justify-content:space-between;opacity:.5;
+  transform-origin:top center;animation:sway 9s ease-in-out infinite}
+#bg .bunting::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:rgba(255,230,190,.6)}
+#bg .bunting i{display:block;width:clamp(10px,2.4vw,18px);height:clamp(13px,3vw,22px);clip-path:polygon(0 0,100% 0,50% 100%)}
+#bg .lantern{position:absolute;top:-4px;width:clamp(32px,6.6vw,58px);transform-origin:top center;animation:sway 7s ease-in-out infinite}
+#bg .lantern .rope{position:absolute;left:50%;top:0;width:2px;height:var(--h,54px);background:linear-gradient(#ffd9a0,#8a6a44);transform:translateX(-50%)}
+#bg .lantern .body{position:absolute;left:0;top:var(--h,54px);width:100%;aspect-ratio:.82;border-radius:46% 46% 44% 44%/40% 40% 52% 52%;
+  background:linear-gradient(180deg,#ff8f6e,#ff6a58 46%,#d6453c);
+  box-shadow:0 0 34px 10px rgba(255,130,90,.36),inset 0 -8px 16px rgba(0,0,0,.28),inset 0 8px 12px rgba(255,220,180,.42);
+  animation:glowpulse 4.2s ease-in-out infinite}
+#bg .lantern .body::after{content:"";position:absolute;inset:33% 14% 33% 14%;border-radius:8px;background:rgba(255,240,200,.2)}
+@keyframes sway{0%,100%{transform:rotate(-2.4deg)}50%{transform:rotate(2.4deg)}}
+@keyframes glowpulse{0%,100%{filter:brightness(.9)}50%{filter:brightness(1.18)}}
+#bg .steam{position:absolute;bottom:13%;width:58px;height:58px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.32),transparent 66%);filter:blur(9px);opacity:0;animation:steam 9s linear infinite}
+@keyframes steam{0%{opacity:0;transform:translateY(0) scale(.7)}25%{opacity:.5}100%{opacity:0;transform:translateY(-200px) scale(1.7)}}
+#bg .counter{position:absolute;left:0;right:0;bottom:0;height:20%;
+  background:linear-gradient(180deg,#4d2c1f,#361e16 42%,#230f09);
+  box-shadow:0 -14px 40px rgba(0,0,0,.55),inset 0 3px 0 rgba(255,200,140,.24)}
+#bg .counter::after{content:"";position:absolute;inset:0;opacity:.26;
+  background:repeating-linear-gradient(95deg,rgba(255,220,180,.16) 0 2px,transparent 2px 16px)}
+/* ============ BASE UI ============ */
+#app{position:relative;z-index:2;height:100vh;height:100dvh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;min-height:0}
+.screen.show{display:flex}
+.glass{background:linear-gradient(180deg,rgba(49,69,140,.5),rgba(10,19,46,.76));
+  border:1.5px solid rgba(255,255,255,.14);border-radius:var(--r);
+  box-shadow:0 14px 38px rgba(0,0,0,.48),inset 0 1.5px 0 rgba(255,255,255,.18);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.btn{font:inherit;font-weight:800;cursor:pointer;border-radius:16px;padding:11px 18px;border:none;color:var(--cream);
+  background:linear-gradient(180deg,rgba(255,255,255,.17),rgba(255,255,255,.05));
+  box-shadow:0 4px 0 rgba(0,0,0,.34),0 8px 18px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.28);
+  transition:transform .1s ease,box-shadow .1s ease,filter .15s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.34),0 3px 10px rgba(0,0,0,.3)}
+.btn.primary{background:linear-gradient(180deg,#ffb0a2,var(--coral) 52%,#e75c4d);color:#40130f;
+  box-shadow:0 4px 0 #b83f33,0 10px 22px rgba(255,110,90,.34),inset 0 1.5px 0 rgba(255,255,255,.6)}
+.btn.primary:active{box-shadow:0 1px 0 #b83f33,0 4px 12px rgba(255,110,90,.3)}
+.btn.gold{background:linear-gradient(180deg,#ffeec2,var(--gold) 52%,#e6a63a);color:#432e06;
+  box-shadow:0 4px 0 #b9812a,0 10px 22px rgba(255,190,90,.3),inset 0 1.5px 0 rgba(255,255,255,.65)}
+.btn.gold:active{box-shadow:0 1px 0 #b9812a,0 4px 12px rgba(255,190,90,.28)}
+.btn.mint{background:linear-gradient(180deg,#bff5e5,var(--mint) 52%,#4fc7a4);color:#0c3b30;
+  box-shadow:0 4px 0 #2f9a7c,0 10px 22px rgba(90,220,190,.28),inset 0 1.5px 0 rgba(255,255,255,.6)}
+.btn.big{font-size:clamp(15px,4.2vw,19px);padding:14px 22px;width:100%}
+.btn.sm{padding:9px 14px;font-size:clamp(12px,3.2vw,14px)}
+.btn[disabled]{opacity:.42;cursor:not-allowed;filter:grayscale(.45)}
+.ibtn{font:inherit;cursor:pointer;width:clamp(29px,7.6vw,35px);height:clamp(29px,7.6vw,35px);display:grid;place-items:center;flex:0 0 auto;
+  border-radius:12px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.1);color:var(--cream);font-size:14px;line-height:1}
+.ibtn.off{opacity:.4}.ibtn:active{transform:scale(.92)}
+.inp{font:inherit;width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(8,14,36,.6);color:var(--cream);text-align:center;font-weight:700;outline:none;user-select:text;-webkit-user-select:text}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,200,97,.18)}
+.inp::placeholder{color:rgba(255,245,230,.38);font-weight:500}
+/* ============ MENU / LOBBY ============ */
+#menu,#lobby{align-items:center;justify-content:center;padding:10px}
+.menu-card{width:min(460px,95vw);max-height:97dvh;overflow:auto;padding:clamp(14px,4vw,24px);text-align:center;
+  display:flex;flex-direction:column;gap:12px;scrollbar-width:thin}
+.logo-badge{width:clamp(70px,19vw,96px);aspect-ratio:1;margin:0 auto;border-radius:50%;padding:8px;
+  background:radial-gradient(circle at 40% 32%,#fffdf6,#fff0d6 60%,#f7d9a8);
+  border:3px solid rgba(255,255,255,.85);
+  box-shadow:0 10px 26px rgba(255,170,90,.35),0 0 0 6px rgba(255,200,97,.18),inset 0 -6px 12px rgba(220,170,110,.35);
+  animation:bob 3.2s ease-in-out infinite}
+.logo-badge svg{width:100%;height:100%;display:block}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-8px) rotate(5deg)}}
+h1{margin:6px 0 0;font-size:clamp(28px,8.6vw,44px);letter-spacing:2px;line-height:1.05;
+  background:linear-gradient(180deg,#fff9ec,var(--gold) 52%,#ea9a42);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 8px 22px rgba(255,180,90,.3)}
+.th-title{margin:2px 0 0;font-size:clamp(17px,5.2vw,23px);font-weight:900;color:var(--coral2);letter-spacing:1px;
+  text-shadow:0 3px 12px rgba(255,120,100,.35)}
+.sub{margin:3px 0 0;font-size:clamp(10px,2.9vw,12px);letter-spacing:3px;color:var(--gold2);opacity:.8;text-transform:uppercase}
+.tabs{display:flex;gap:6px;padding:5px;border-radius:16px;background:rgba(8,14,36,.55);border:1px solid rgba(255,255,255,.1)}
+.tabs button{flex:1;font:inherit;font-weight:800;cursor:pointer;padding:10px;border-radius:12px;border:none;background:transparent;color:var(--cream);opacity:.6}
+.tabs button.on{opacity:1;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#432e06;box-shadow:0 3px 10px rgba(255,190,90,.3)}
+.opt-label{font-size:11.5px;opacity:.72;margin-bottom:6px;letter-spacing:.5px}
+.seg{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.seg button{font:inherit;font-weight:900;cursor:pointer;min-width:46px;padding:10px 12px;border-radius:14px;border:none;
+  background:rgba(255,255,255,.08);color:var(--cream);box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.seg button.on{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#432e06;box-shadow:0 3px 0 #b9812a,0 6px 16px rgba(255,190,90,.3)}
+.seg button:active{transform:translateY(2px)}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.note{font-size:11px;opacity:.6;line-height:1.55}
+.legal{font-size:9.5px;opacity:.42;line-height:1.5}
+.divider{display:flex;align-items:center;gap:8px;opacity:.5;font-size:11px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.2)}
+.netstatus{font-size:12px;min-height:18px;color:var(--gold2);line-height:1.5}
+.netstatus.err{color:var(--coral2)}
+.codebox{font-size:clamp(26px,9vw,42px);font-weight:900;letter-spacing:9px;padding:10px 6px 10px 15px;border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,200,97,.2),rgba(255,200,97,.06));border:1.5px dashed rgba(255,200,97,.5);color:var(--gold2)}
+.loblist{display:flex;flex-direction:column;gap:6px;max-height:34dvh;overflow:auto}
+.lob{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)}
+.lob .av{font-size:20px}.lob .nm{flex:1;text-align:left;font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lob .tag{font-size:10px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.12);white-space:nowrap}
+.lob.off{opacity:.45}
+.lob .tag.host{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#432e06;font-weight:800}
+.lob .tag.bot{background:linear-gradient(180deg,#bff5e5,var(--mint));color:#0c3b30;font-weight:800}
+/* ============ GAME ============ */
+#game{flex-direction:column;gap:6px;padding:calc(env(safe-area-inset-top) + 6px) 8px calc(env(safe-area-inset-bottom) + 8px)}
+.hud{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:16px}
+.hud-l,.hud-r{display:flex;gap:5px;flex:1;min-width:0}
+.hud-l{overflow:hidden}
+.hud-r{justify-content:flex-end}
+.hud-c{font-weight:900;letter-spacing:1.5px;font-size:clamp(11px,3.3vw,16px);white-space:nowrap;
+  background:linear-gradient(180deg,#fff9ec,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hud-c .short{display:none}
+.pill{font-size:clamp(9.5px,2.8vw,12px);font-weight:800;padding:5px 9px;border-radius:999px;white-space:nowrap;flex:0 0 auto;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}
+.pill.hot{background:linear-gradient(180deg,rgba(255,150,130,.55),rgba(226,88,74,.4));border-color:rgba(255,180,160,.5)}
+.pill.net{background:linear-gradient(180deg,rgba(127,224,192,.4),rgba(60,170,140,.3));border-color:rgba(160,255,225,.4)}
+.seats{flex:0 0 auto;display:grid;gap:6px}
+.seat{position:relative;border-radius:16px;padding:5px;display:flex;flex-direction:column;gap:4px;min-width:0;
+  background:linear-gradient(180deg,rgba(49,69,140,.5),rgba(10,19,46,.7));border:1.5px solid rgba(255,255,255,.1);
+  box-shadow:0 6px 16px rgba(0,0,0,.36);transition:border-color .25s,box-shadow .25s}
+.seat.done{border-color:rgba(255,200,97,.6);box-shadow:0 0 0 1px rgba(255,200,97,.22),0 6px 20px rgba(255,180,80,.18)}
+.seat.off{opacity:.45;filter:grayscale(.5)}
+.seat-top{display:flex;align-items:center;gap:4px;min-width:0}
+.seat-av{font-size:clamp(13px,3.6vw,18px);flex:0 0 auto;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.seat-nm{font-size:clamp(9px,2.6vw,11.5px);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.seat-sc{font-size:clamp(10px,3vw,13px);font-weight:900;color:var(--gold);flex:0 0 auto}
+.seat-meta{display:flex;gap:4px;flex-wrap:wrap}
+.mchip{font-size:clamp(8px,2.3vw,10px);padding:2px 5px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+.seat-tiles{display:flex;flex-wrap:wrap;gap:3px;min-height:var(--tileW);align-content:flex-start;overflow:hidden;max-height:calc(var(--tileW)*2 + 3px)}
+.tile{position:relative;width:var(--tileW);height:var(--tileW);border-radius:9px;flex:0 0 auto;
+  background:linear-gradient(160deg,#fffaf0,#f2dfc0);border:1px solid rgba(255,200,97,.4);box-shadow:0 2px 5px rgba(0,0,0,.3)}
+.tile svg{width:100%;height:100%;display:block}
+.tile .badge{position:absolute;right:-3px;bottom:-3px;min-width:13px;height:13px;padding:0 3px;border-radius:999px;
+  background:linear-gradient(180deg,var(--coral2),#e2584a);color:#fff;font-size:9px;font-weight:900;display:grid;place-items:center;border:1px solid rgba(255,255,255,.45)}
+.stamp{position:absolute;right:4px;top:3px;font-size:11px;opacity:0;transform:scale(.4) rotate(-20deg);transition:all .3s cubic-bezier(.2,.9,.3,1.6)}
+.seat.done .stamp{opacity:1;transform:scale(1) rotate(-12deg)}
+.center{flex:1 1 auto;min-height:0;position:relative;display:flex}
+.myplay{flex:1;min-height:0;display:flex;flex-direction:column;padding:7px 9px;gap:5px}
+.myplay-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.who{font-weight:900;font-size:clamp(11px,3.2vw,14px);color:var(--gold2)}
+.chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{font-size:clamp(9px,2.6vw,11px);padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);white-space:nowrap}
+.chip.gold{background:linear-gradient(180deg,rgba(255,230,176,.3),rgba(255,200,97,.14));border-color:rgba(255,200,97,.4);color:var(--gold2)}
+.tableau{flex:1;min-height:0;overflow-y:auto;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;padding:2px;scrollbar-width:thin}
+.tableau::-webkit-scrollbar{width:4px}.tableau::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:4px}
+.empty{opacity:.45;font-size:12px;padding:10px;width:100%;text-align:center}
+.reveal{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:var(--r);
+  background:linear-gradient(180deg,rgba(18,32,76,.92),rgba(6,12,32,.95));border:1.5px solid rgba(255,200,97,.3);z-index:5}
+.reveal.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reveal-title{font-weight:900;letter-spacing:2px;color:var(--gold);font-size:clamp(13px,3.9vw,18px);text-shadow:0 0 20px rgba(255,200,97,.5)}
+.reveal-row{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:100%;overflow:auto;padding:4px}
+.rv{display:flex;flex-direction:column;align-items:center;gap:3px;max-width:calc(var(--cardW)*2 + 14px)}
+.rv-name{font-size:clamp(8px,2.4vw,11px);opacity:.88;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv-cards{display:flex;gap:3px}
+.handwrap{flex:0 0 auto;padding:5px 7px 7px;display:flex;flex-direction:column;gap:4px}
+.hand-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:clamp(10px,2.9vw,13px)}
+.hand-head .lbl{font-weight:800;color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pass-note{opacity:.6;font-size:clamp(9px,2.5vw,11px);white-space:nowrap}
+.hand{overflow-x:auto;overflow-y:hidden;padding:14px 4px 6px;scrollbar-width:none}
+.hand::-webkit-scrollbar{display:none}
+.hand-row{display:flex;gap:6px;margin:0 auto;width:max-content;padding:0 2px}
+.hand.locked{opacity:.4;pointer-events:none;filter:grayscale(.35)}
+.hand-actions{display:flex;gap:7px;justify-content:center}
+/* ============ CARD (cute) ============ */
+.card{position:relative;width:var(--cardW);height:calc(var(--cardW)*1.42);border-radius:15px;flex:0 0 auto;overflow:hidden;
+  background:linear-gradient(162deg,#fffdf7 0%,#fff2dd 50%,#f7e3c2 100%);
+  border:2px solid rgba(255,255,255,.85);
+  box-shadow:0 8px 18px rgba(2,6,22,.5),inset 0 -6px 12px rgba(220,190,150,.25),inset 0 2px 0 rgba(255,255,255,.95);
+  display:flex;flex-direction:column;cursor:pointer;transition:transform .17s cubic-bezier(.2,.9,.3,1.5),box-shadow .17s}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--accent,#ff7d6d);opacity:.95}
+.card::after{content:"";position:absolute;left:-40%;top:-60%;width:55%;height:180%;transform:rotate(22deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);pointer-events:none}
+.card .art{flex:1;min-height:0;display:grid;place-items:center;padding:5px 3px 0}
+.card .art svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 2px rgba(120,80,40,.18))}
+.card .cap{flex:0 0 auto;padding:2px 3px 5px;text-align:center;color:#5a4433}
+.card .nm{font-size:clamp(7px,2.1vw,10px);font-weight:900;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .hint{font-size:clamp(6px,1.7vw,8px);opacity:.72;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hand .card:active{transform:translateY(-4px) scale(.97)}
+.card.sel{transform:translateY(-15px) scale(1.07);box-shadow:0 16px 28px rgba(255,120,100,.45),0 0 0 3px var(--coral)}
+.card.sel .cap{color:#7a2c22}
+.card.sel::after{animation:shine 1.4s linear infinite}
+@keyframes shine{0%{left:-40%}100%{left:130%}}
+.card .tick{position:absolute;right:3px;top:6px;width:18px;height:18px;border-radius:50%;display:none;place-items:center;z-index:2;
+  background:linear-gradient(180deg,var(--coral2),#e2584a);color:#fff;font-size:11px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.card.sel .tick{display:grid;animation:pop .3s cubic-bezier(.2,.9,.3,1.8)}
+.card.mini{width:var(--miniW);height:calc(var(--miniW)*1.42);border-radius:11px;cursor:default;border-width:1.5px}
+.card.mini .hint{display:none}.card.mini .nm{font-size:clamp(5.5px,1.6vw,8px)}
+.card.new{animation:pop .5s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes pop{0%{transform:scale(.35) translateY(-26px) rotate(-10deg);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+.card.flip{animation:flipin .5s ease both}
+@keyframes flipin{0%{transform:rotateY(90deg) scale(.75);opacity:0}60%{transform:rotateY(-8deg) scale(1.06)}100%{transform:rotateY(0) scale(1);opacity:1}}
+.card.back{background:repeating-linear-gradient(45deg,#31458c 0 9px,#22336f 9px 18px)}
+.card.back .art{font-size:1.7em}
+.hand-row.passing{animation:passout .36s ease forwards}
+@keyframes passout{to{transform:translateX(24%) rotate(3deg);opacity:0}}
+.hand-row.passin{animation:passin .4s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes passin{0%{transform:translateX(-24%) rotate(-3deg);opacity:0}100%{transform:none;opacity:1}}
+/* ============ OVERLAY ============ */
+.overlay{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:12px;
+  background:radial-gradient(70% 60% at 50% 40%,rgba(14,26,62,.9),rgba(3,7,20,.97))}
+.overlay.show{display:flex;animation:fadeIn .22s ease}
+.panel{width:min(580px,96vw);max-height:93dvh;overflow:auto;padding:clamp(14px,3.6vw,22px);text-align:center;display:flex;flex-direction:column;gap:12px}
+.panel h2{margin:0;font-size:clamp(18px,5.4vw,26px);color:var(--gold2);letter-spacing:.5px}
+.panel h3{margin:0;font-size:clamp(13px,3.6vw,16px);color:var(--coral2)}
+table.sc{width:100%;border-collapse:collapse;font-size:clamp(10px,2.9vw,13px)}
+table.sc th,table.sc td{padding:6px 5px;border-bottom:1px solid rgba(255,255,255,.1);text-align:center;white-space:nowrap}
+table.sc th{font-size:clamp(9px,2.5vw,11px);opacity:.7;font-weight:700}
+table.sc td.nm{text-align:left;font-weight:800;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+table.sc tr.me td{color:var(--gold2)}
+table.sc tr.win td{background:linear-gradient(90deg,rgba(255,200,97,.2),transparent)}
+.hand-big{font-size:clamp(40px,12vw,64px);animation:bob 2.4s ease-in-out infinite}
+.rules{text-align:left;font-size:clamp(11px,3vw,13px);line-height:1.68;display:flex;flex-direction:column;gap:5px}
+.rules b{color:var(--gold2)}
+.winner-crown{font-size:clamp(34px,10vw,52px);animation:bob 2.4s ease-in-out infinite}
+#toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:90;background:rgba(226,88,74,.95);
+  color:#fff;padding:10px 16px;border-radius:14px;font-size:12.5px;max-width:92vw;display:none;box-shadow:0 8px 24px rgba(0,0,0,.45);text-align:center}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (max-width:440px){
+  .hud-c .full{display:none}.hud-c .short{display:inline}
+  .hud.online .hud-c{display:none}
+}
+@media (orientation:landscape) and (max-height:540px){
+  :root{--cardW:clamp(46px,11.5vh,74px);--miniW:clamp(27px,6.4vh,40px);--tileW:clamp(16px,4vh,24px)}
+  .seat-tiles{max-height:var(--tileW)}
+  .hand{padding:10px 4px 4px}
+  .menu-card{max-height:94dvh}
+  .logo-badge{width:58px}
+}
+@media (prefers-reduced-motion:reduce){
+  #bg .lantern,#bg .bunting,#bg .steam,.logo-badge,.hand-big,.winner-crown{animation:none}
+}
+</style>
+</head>
+<body>
+<canvas id="petals"></canvas><canvas id="fx"></canvas>
+<div id="bg">
+  <div class="glowfield"></div><div class="moon"></div>
+  <div class="bunting" id="bunting"></div>
+  <div class="lantern" style="left:7%;--h:44px;animation-delay:-1s"><div class="rope"></div><div class="body"></div></div>
+  <div class="lantern" style="left:29%;--h:76px;animation-delay:-3s"><div class="rope"></div><div class="body"></div></div>
+  <div class="lantern" style="left:61%;--h:56px;animation-delay:-2s"><div class="rope"></div><div class="body"></div></div>
+  <div class="lantern" style="left:87%;--h:90px;animation-delay:-4.5s"><div class="rope"></div><div class="body"></div></div>
+  <div class="steam" style="left:17%;animation-delay:0s"></div>
+  <div class="steam" style="left:51%;animation-delay:-3.2s"></div>
+  <div class="steam" style="left:80%;animation-delay:-6s"></div>
+  <div class="counter"></div>
+</div>
+
+<div id="app">
+  <!-- ===== MENU ===== -->
+  <section id="menu" class="screen show">
+    <div class="menu-card glass">
+      <div>
+        <div class="logo-badge" id="logoArt"></div>
+        <h1>AROI MARKET!</h1>
+        <p class="th-title">ตลาดอร่อย!</p>
+        <p class="sub">Thai Night Market Card Party</p>
+      </div>
+      <div class="tabs" id="tabs">
+        <button type="button" data-tab="off" class="on">🏠 ออฟไลน์</button>
+        <button type="button" data-tab="on">🌐 ออนไลน์</button>
+      </div>
+      <div id="tabOff" style="display:flex;flex-direction:column;gap:12px">
+        <div><div class="opt-label">จำนวนผู้เล่นทั้งหมด</div><div class="seg" id="segPlayers"></div></div>
+        <div><div class="opt-label">ผู้เล่นจริง (ส่งเครื่องกันเล่น) — ที่เหลือเป็นบอท</div><div class="seg" id="segHumans"></div></div>
+        <button class="btn primary big" id="btnStart" type="button">🍜 เริ่มเกม</button>
+      </div>
+      <div id="tabOn" style="display:none;flex-direction:column;gap:10px">
+        <input class="inp" id="inName" maxlength="12" placeholder="ชื่อผู้เล่นของคุณ" autocomplete="off">
+        <button class="btn mint big" id="btnCreate" type="button">➕ สร้างห้อง</button>
+        <div class="divider">หรือ</div>
+        <input class="inp" id="inCode" maxlength="5" placeholder="รหัสห้อง 5 ตัว" autocomplete="off" style="letter-spacing:6px;font-size:18px">
+        <button class="btn gold big" id="btnJoin" type="button">🚪 เข้าร่วมห้อง</button>
+        <div class="netstatus" id="netStatus"></div>
+      </div>
+      <div class="row">
+        <button class="btn sm" id="btnRules" type="button">📖 กติกา</button>
+        <button class="btn sm" id="btnMusicM" type="button">♪ เพลง: เปิด</button>
+        <button class="btn sm" id="btnSfxM" type="button">🔊 เสียง: เปิด</button>
+      </div>
+      <div class="note">เดินตลาดเลือกเมนูเด็ด 3 รอบ • ทุกคนเลือกพร้อมกัน เปิดพร้อมกัน แล้วส่งไพ่ที่เหลือให้คนทางซ้าย</div>
+      <div class="legal">AROI MARKET! เป็นเกมธีมอาหารไทยที่สร้างขึ้นใหม่ ภาพและชื่อทั้งหมดเป็นผลงานต้นฉบับ ไม่ใช่ผลิตภัณฑ์ทางการและไม่มีส่วนเกี่ยวข้องกับผู้จัดจำหน่ายเกมการ์ดรายใด</div>
+    </div>
+  </section>
+
+  <!-- ===== LOBBY ===== -->
+  <section id="lobby" class="screen">
+    <div class="menu-card glass">
+      <div><div class="hand-big" style="font-size:40px">🛺</div>
+        <h2 style="margin:0;color:var(--gold2)" id="lobTitle">ห้องเกม</h2>
+        <div class="sub">AROI MARKET! • ตลาดอร่อย</div></div>
+      <div class="codebox" id="lobCode">-----</div>
+      <div class="row" id="lobShare">
+        <button class="btn sm" id="btnCopyCode" type="button">📋 คัดลอกรหัส</button>
+        <button class="btn sm" id="btnCopyLink" type="button">🔗 คัดลอกลิงก์เชิญ</button>
+      </div>
+      <div class="loblist" id="lobList"></div>
+      <div class="row" id="hostCtrl">
+        <button class="btn sm mint" id="btnAddBot" type="button">🤖 เพิ่มบอท</button>
+        <button class="btn sm" id="btnDelBot" type="button">➖ ลบบอท</button>
+      </div>
+      <button class="btn primary big" id="btnLobbyStart" type="button">🍜 เริ่มเกม</button>
+      <div class="netstatus" id="lobHint"></div>
+      <button class="btn sm" id="btnLeave" type="button">← ออกจากห้อง</button>
+    </div>
+  </section>
+
+  <!-- ===== GAME ===== -->
+  <section id="game" class="screen">
+    <div class="hud glass" id="hud">
+      <div class="hud-l">
+        <span class="pill" id="pillRound">รอบ 1/3</span>
+        <span class="pill" id="pillTurn">ตา 1/8</span>
+        <span class="pill net" id="pillNet" style="display:none">🌐</span>
+      </div>
+      <div class="hud-c"><span class="full">AROI MARKET!</span><span class="short">AROI!</span></div>
+      <div class="hud-r">
+        <button class="ibtn" id="btnMusicG" type="button" title="เพลง">♪</button>
+        <button class="ibtn" id="btnSfxG" type="button" title="เสียงเอฟเฟกต์">🔊</button>
+        <button class="ibtn" id="btnRulesG" type="button" title="กติกา">?</button>
+        <button class="ibtn" id="btnQuit" type="button" title="ออกจากเกม">✕</button>
+      </div>
+    </div>
+    <div class="seats" id="seats"></div>
+    <div class="center">
+      <div class="myplay glass">
+        <div class="myplay-head"><span class="who" id="myName">ถาดของคุณ</span><span class="chips" id="myChips"></span></div>
+        <div class="tableau" id="myTableau"></div>
+      </div>
+      <div class="reveal" id="reveal">
+        <div class="reveal-title">✨ เปิดเมนูพร้อมกัน! ✨</div>
+        <div class="reveal-row" id="revealRow"></div>
+      </div>
+    </div>
+    <div class="handwrap glass">
+      <div class="hand-head"><span class="lbl" id="handLabel">เลือกไพ่ 1 ใบ</span><span class="pass-note">ส่งไพ่ไปทางซ้าย →</span></div>
+      <div class="hand" id="hand"><div class="hand-row" id="handRow"></div></div>
+      <div class="hand-actions">
+        <button class="btn sm" id="btnChop" type="button" style="display:none">🥄 ใช้ช้อนส้อม</button>
+        <button class="btn primary sm" id="btnConfirm" type="button" disabled>ยืนยัน</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="ovHandoff"><div class="panel glass">
+  <div class="hand-big" id="hoAv">🍜</div><h2 id="hoName">ผู้เล่น 1</h2>
+  <div style="opacity:.8;font-size:13px">ส่งเครื่องให้ผู้เล่นคนนี้ แล้วแตะเพื่อดูไพ่บนมือ</div>
+  <button class="btn gold big" id="hoBtn" type="button">👀 ดูไพ่ของฉัน</button>
+</div></div>
+
+<div class="overlay" id="ovRound"><div class="panel glass">
+  <h2 id="roundTitle">สรุปรอบที่ 1</h2>
+  <div style="overflow:auto"><table class="sc" id="roundTable"></table></div>
+  <button class="btn primary big" id="roundBtn" type="button">รอบถัดไป</button>
+</div></div>
+
+<div class="overlay" id="ovFinal"><div class="panel glass">
+  <div class="winner-crown">👑</div><h2 id="finalTitle">ผู้ชนะ!</h2><h3 id="finalSub"></h3>
+  <div style="overflow:auto"><table class="sc" id="finalTable"></table></div>
+  <div class="row">
+    <button class="btn primary" id="btnAgain" type="button">🔄 เล่นอีกครั้ง</button>
+    <button class="btn" id="btnMenu" type="button">🏠 เมนูหลัก</button>
+  </div>
+</div></div>
+
+<div class="overlay" id="ovRules"><div class="panel glass">
+  <h2>📖 วิธีเล่น AROI MARKET!</h2>
+  <div class="rules">
+    <div><b>เดินตลาด:</b> แจกไพ่ตามจำนวนผู้เล่น (2 คน=10, 3=9, 4=8, 5=7 ใบ) ทุกคนเลือกเมนู 1 ใบพร้อมกัน เปิดพร้อมกัน แล้วส่งไพ่ที่เหลือให้คนทางซ้าย ทำไปจนไพ่หมดมือ = จบ 1 รอบ เล่นทั้งหมด 3 รอบ</div>
+    <div><b>🥥 ขนมครก (Khanom Krok):</b> ทุกคู่ได้ 5 คะแนน ใบเดี่ยวไม่ได้คะแนน</div>
+    <div><b>🍢 หมูปิ้ง (Moo Ping):</b> ทุก 3 ไม้ได้ 10 คะแนน ไม่ครบชุดไม่ได้คะแนน</div>
+    <div><b>🍡 ลูกชุบ (Luk Chup):</b> 1/2/3/4/5 ลูกขึ้นไป = 1/3/6/10/15 คะแนน</div>
+    <div><b>🧋 ชาไทย (Thai Tea):</b> จบรอบ นับจำนวนแก้ว คนที่มากที่สุดได้ 6 อันดับสองได้ 3 ถ้าเสมอให้หารแบ่ง (ปัดเศษทิ้ง) ถ้าเสมอที่หนึ่งจะไม่มีคะแนนอันดับสอง</div>
+    <div><b>🍛 จานข้าว:</b> ข้าวผัด = 1, ข้าวมันไก่ = 2, กะเพราไข่ดาว = 3</div>
+    <div><b>🌶️ พริกน้ำปลา:</b> จานข้าวใบถัดไปที่วางลงถาดได้คะแนน ×3 (ต้องวางพริกน้ำปลาก่อน)</div>
+    <div><b>🥄 ช้อนส้อม:</b> ตาต่อ ๆ ไปกด "ใช้ช้อนส้อม" เพื่อหยิบ 2 ใบในตาเดียว แล้วช้อนส้อมจะกลับเข้ามือที่ถูกส่งต่อ</div>
+    <div><b>🥭 ข้าวเหนียวมะม่วง:</b> เก็บสะสมข้ามรอบ คิดคะแนนตอนจบเกม — มากที่สุด +6 น้อยที่สุด −6 (หารแบ่งเมื่อเสมอ) เกม 2 คนไม่มีโทษ −6</div>
+    <div><b>ผู้ชนะ:</b> คะแนนรวมสูงสุด ถ้าเสมอให้ดูจำนวนข้าวเหนียวมะม่วง</div>
+  </div>
+  <button class="btn gold big" id="rulesClose" type="button">เข้าใจแล้ว อร่อยเลย!</button>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+(function(){
+/* ======================================================
+   0) SAFETY + UTILS
+   ====================================================== */
+window.addEventListener('error',function(e){
+  if(!e||!e.message||/^script error/i.test(e.message)) return; // ignore opaque cross-origin noise
+  console.error('[AROI]',e.message,e.filename,e.lineno);
+});
+window.addEventListener('unhandledrejection',function(e){ console.warn('[AROI] rejection',e&&e.reason); });
+var $=function(s,r){return (r||document).querySelector(s);};
+var sleep=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
+var toastT=null;
+function toast(m,ms){
+  var t=$('#toast'); if(!t)return;
+  t.textContent=m; t.style.display='block';
+  clearTimeout(toastT); toastT=setTimeout(function(){t.style.display='none';},ms||3200);
+}
+var _uid=0; function uid(){_uid++;return 'c'+_uid;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ======================================================
+   1) AUDIO — SFX + THAI-FLAVOURED THEME SONG
+   ====================================================== */
+var AUD={
+  ctx:null,master:null,mGain:null,sGain:null,noise:null,
+  musicOn:true,sfxOn:true,timer:null,step:0,nextT:0,bpm:104,
+  init:function(){
+    if(this.ctx) return true;
+    var AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return false;
+    try{
+      this.ctx=new AC();
+      this.master=this.ctx.createGain(); this.master.gain.value=.92; this.master.connect(this.ctx.destination);
+      this.mGain=this.ctx.createGain(); this.mGain.gain.value=this.musicOn?.2:0; this.mGain.connect(this.master);
+      this.sGain=this.ctx.createGain(); this.sGain.gain.value=this.sfxOn?.5:0; this.sGain.connect(this.master);
+      var len=this.ctx.sampleRate, buf=this.ctx.createBuffer(1,len,this.ctx.sampleRate), d=buf.getChannelData(0);
+      for(var i=0;i<len;i++) d[i]=Math.random()*2-1;
+      this.noise=buf;
+      return true;
+    }catch(e){ console.warn('audio init',e); this.ctx=null; return false; }
+  },
+  unlock:function(){
+    if(!this.init())return;
+    if(this.ctx.state==='suspended'){ this.ctx.resume().catch(function(){}); }
+    if(this.musicOn&&!document.hidden) this.startMusic();
+  },
+  mtof:function(m){ return 440*Math.pow(2,(m-69)/12); },
+  pluck:function(f,t,dur,vol){ // ranat-like mallet
+    var c=this.ctx; if(!c)return;
+    try{
+      var o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter();
+      o.type='triangle'; o2.type='sine';
+      o.frequency.setValueAtTime(f,t); o2.frequency.setValueAtTime(f*3.01,t);
+      lp.type='lowpass'; lp.frequency.setValueAtTime(Math.min(7000,f*7),t);
+      var g2=c.createGain(); g2.gain.setValueAtTime(.18,t);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(vol,t+.008);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); g.connect(this.mGain);
+      o.start(t); o2.start(t); o.stop(t+dur+.05); o2.stop(t+dur+.05);
+    }catch(e){}
+  },
+  pad:function(freqs,t,dur,vol){
+    var c=this.ctx; if(!c)return;
+    try{
+      var g=c.createGain(),lp=c.createBiquadFilter();
+      lp.type='lowpass'; lp.frequency.setValueAtTime(1000,t);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(vol,t+.35);
+      g.gain.linearRampToValueAtTime(0.0001,t+dur);
+      lp.connect(g); g.connect(this.mGain);
+      freqs.forEach(function(f,i){
+        var o=c.createOscillator(); o.type='sawtooth';
+        o.frequency.setValueAtTime(f*(i===0?1:1.0015),t);
+        o.connect(lp); o.start(t); o.stop(t+dur+.1);
+      });
+    }catch(e){}
+  },
+  bass:function(f,t,dur,vol){
+    var c=this.ctx; if(!c)return;
+    try{
+      var o=c.createOscillator(),g=c.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(f,t);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(vol,t+.03);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(this.mGain); o.start(t); o.stop(t+dur+.05);
+    }catch(e){}
+  },
+  kick:function(t,vol){
+    var c=this.ctx; if(!c)return;
+    try{
+      var o=c.createOscillator(),g=c.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(46,t+.11);
+      g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.16);
+      o.connect(g); g.connect(this.mGain); o.start(t); o.stop(t+.2);
+    }catch(e){}
+  },
+  ching:function(t,vol){ // small Thai finger-cymbal tick
+    var c=this.ctx; if(!c)return;
+    try{
+      [2637,3951].forEach(function(f){
+        var o=c.createOscillator(),g=c.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(f,t);
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(vol,t+.004);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+.38);
+        o.connect(g); g.connect(AUD.mGain); o.start(t); o.stop(t+.42);
+      });
+    }catch(e){}
+  },
+  chap:function(t,vol){
+    var c=this.ctx; if(!c||!this.noise)return;
+    try{
+      var s=c.createBufferSource(),g=c.createGain(),hp=c.createBiquadFilter();
+      s.buffer=this.noise; hp.type='highpass'; hp.frequency.setValueAtTime(6500,t);
+      g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.05);
+      s.connect(hp); hp.connect(g); g.connect(this.mGain); s.start(t); s.stop(t+.07);
+    }catch(e){}
+  },
+  /* Original pentatonic theme — 4 bars x 8 eighth-notes */
+  MEL:[72,74,76,null,79,76,74,72, 69,null,72,74,76,null,74,72, 76,79,81,null,84,81,79,76, 74,76,72,69,72,null,null,null],
+  CH:[[60,64,67],[57,60,64],[53,57,60],[55,59,62]],
+  BS:[36,33,29,31],
+  startMusic:function(){
+    if(!this.ctx||this.timer)return;
+    var self=this;
+    this.nextT=this.ctx.currentTime+.08;
+    this.timer=setInterval(function(){
+      if(!self.ctx||!self.musicOn)return;
+      if(self.ctx.state!=='running') return;
+      if(self.nextT<self.ctx.currentTime) self.nextT=self.ctx.currentTime+.05;
+      var dur=60/self.bpm/2,guard=0;
+      while(self.nextT<self.ctx.currentTime+.22&&guard<32){
+        guard++;
+        var s=self.step%32,bar=Math.floor(s/8),t=self.nextT,n=self.MEL[s];
+        if(n!==null&&n!==undefined){
+          self.pluck(self.mtof(n),t,.6,.15);
+          if(s%2===0) self.pluck(self.mtof(n+12),t+dur*.5,.25,.04);
+        }
+        if(s%8===0) self.pad(self.CH[bar].map(function(m){return self.mtof(m);}),t,dur*8,.03);
+        if(s%4===0){ self.bass(self.mtof(self.BS[bar]),t,dur*3.4,.12); self.kick(t,.2); }
+        if(s%4===2) self.ching(t,.03);
+        if(s%2===1) self.chap(t,.03);
+        self.nextT+=dur; self.step++;
+      }
+    },28);
+  },
+  stopMusic:function(){ if(this.timer){clearInterval(this.timer);this.timer=null;} },
+  setMusic:function(on){ this.musicOn=on; if(this.mGain)this.mGain.gain.value=on?.2:0; if(on)this.unlock(); else this.stopMusic(); },
+  setSfx:function(on){ this.sfxOn=on; if(this.sGain)this.sGain.gain.value=on?.5:0; },
+  tone:function(f,dur,type,vol,when){
+    var c=this.ctx; if(!c)return;
+    var t=when||c.currentTime;
+    try{
+      var o=c.createOscillator(),g=c.createGain();
+      o.type=type||'sine'; o.frequency.setValueAtTime(f,t);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(Math.max(.0002,vol),t+.018);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(this.sGain); o.start(t); o.stop(t+dur+.05);
+    }catch(e){}
+  },
+  sweep:function(a,b,dur,vol){
+    var c=this.ctx; if(!c)return; var t=c.currentTime;
+    try{
+      var o=c.createOscillator(),g=c.createGain();
+      o.type='triangle'; o.frequency.setValueAtTime(a,t); o.frequency.exponentialRampToValueAtTime(Math.max(40,b),t+dur);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.03); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(this.sGain); o.start(t); o.stop(t+dur+.05);
+    }catch(e){}
+  },
+  sfx:function(n){
+    if(!this.ctx||!this.sfxOn)return;
+    var c=this.ctx.currentTime,self=this;
+    switch(n){
+      case 'tap': this.tone(660,.08,'triangle',.2); break;
+      case 'select': this.tone(784,.1,'triangle',.24); this.tone(1175,.12,'sine',.14,c+.05); break;
+      case 'deselect': this.tone(440,.09,'triangle',.16); break;
+      case 'confirm': this.tone(587,.09,'square',.12); this.tone(880,.16,'triangle',.2,c+.06); break;
+      case 'reveal': [523,587,659,784,1047].forEach(function(f,i){ self.tone(f,.3,'triangle',.15,c+i*.055); }); break;
+      case 'pass': this.sweep(900,240,.32,.18); break;
+      case 'round': [392,440,523,659,784].forEach(function(f,i){ self.tone(f,.42,'sine',.18,c+i*.1); }); break;
+      case 'win': [523,587,659,784,880,1047,880,1047,1319].forEach(function(f,i){ self.tone(f,.5,'triangle',.19,c+i*.12); }); break;
+      case 'join': this.tone(659,.12,'sine',.2); this.tone(988,.18,'sine',.16,c+.1); break;
+      case 'leave': this.tone(494,.14,'sine',.16); this.tone(330,.2,'sine',.14,c+.1); break;
+      case 'err': this.tone(190,.18,'sawtooth',.13); break;
+    }
+  }
+};
+['pointerdown','touchend','click','keydown'].forEach(function(ev){
+  document.addEventListener(ev,function(){ AUD.unlock(); },{passive:true});
+});
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden) AUD.stopMusic();
+  else if(AUD.musicOn&&AUD.ctx) AUD.startMusic();
+});
+
+/* ======================================================
+   2) CARD ART — original cute Thai food SVGs
+   ====================================================== */
+function face(cx,cy,s,col){
+  var c=col||'#4a3a2e'; s=s||1;
+  return '<g transform="translate('+cx+','+cy+') scale('+s+')">'+
+    '<ellipse cx="-8" cy="0" rx="2.8" ry="3.6" fill="'+c+'"/>'+
+    '<ellipse cx="8" cy="0" rx="2.8" ry="3.6" fill="'+c+'"/>'+
+    '<ellipse cx="-7.1" cy="-1.3" rx="1" ry="1.3" fill="#fff" opacity=".95"/>'+
+    '<ellipse cx="8.9" cy="-1.3" rx="1" ry="1.3" fill="#fff" opacity=".95"/>'+
+    '<path d="M-3.6 5.4 q3.6 4 7.2 0" stroke="'+c+'" stroke-width="1.8" fill="none" stroke-linecap="round"/>'+
+    '<ellipse cx="-14" cy="4.2" rx="3.4" ry="2.1" fill="#ff9aa8" opacity=".62"/>'+
+    '<ellipse cx="14" cy="4.2" rx="3.4" ry="2.1" fill="#ff9aa8" opacity=".62"/></g>';
+}
+function shadow(){ return '<ellipse cx="50" cy="87" rx="32" ry="6" fill="rgba(90,50,20,.16)"/>'; }
+function spark(x,y,r,o){
+  return '<path d="M'+x+' '+(y-r)+' l'+(r*.32)+' '+(r*.68)+' l'+(r*.68)+' '+(r*.32)+' l-'+(r*.68)+' '+(r*.32)+' l-'+(r*.32)+' '+(r*.68)+
+    ' l-'+(r*.32)+' -'+(r*.68)+' l-'+(r*.68)+' -'+(r*.32)+' l'+(r*.68)+' -'+(r*.32)+' z" fill="#fff3c4" opacity="'+(o||.85)+'"/>';
+}
+function steam(x,y){
+  return '<path d="M'+x+' '+y+' q-4-5 0-10 q4-5 0-10" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".75"/>';
+}
+function leaf(){
+  return '<path d="M8 80 q42 -16 84 0 q-42 14 -84 0z" fill="#7ccf8f" stroke="#55a96b" stroke-width="1.6"/>'+
+    '<path d="M14 80 h72" stroke="#55a96b" stroke-width="1.2" opacity=".7"/>';
+}
+function plate(){
+  return '<ellipse cx="50" cy="75" rx="41" ry="12.5" fill="#fffdf8" stroke="#c9dcf3" stroke-width="2"/>'+
+    '<ellipse cx="50" cy="75" rx="33" ry="8.6" fill="none" stroke="#8fb3e8" stroke-width="1.4" stroke-dasharray="2.5 3"/>';
+}
+function dome(fill,stroke){
+  return '<path d="M20 73 q2-28 30-28 t30 28 q-30 8-60 0z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+}
+function krokCup(x,y,r,f){
+  return '<g><circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#eaa650" stroke="#c47f2c" stroke-width="2"/>'+
+    '<circle cx="'+x+'" cy="'+(y-1)+'" r="'+(r*.74)+'" fill="#fff6e2"/>'+
+    '<ellipse cx="'+(x-r*.2)+'" cy="'+(y-r*.38)+'" rx="'+(r*.28)+'" ry="'+(r*.13)+'" fill="#fff" opacity=".9"/>'+
+    '<circle cx="'+(x+r*.34)+'" cy="'+(y-r*.3)+'" r="'+(r*.09)+'" fill="#6cc48a"/>'+
+    '<circle cx="'+(x-r*.44)+'" cy="'+(y+r*.02)+'" r="'+(r*.08)+'" fill="#6cc48a"/>'+
+    '<circle cx="'+(x+r*.42)+'" cy="'+(y+r*.22)+'" r="'+(r*.07)+'" fill="#6cc48a"/>'+
+    (f?face(x,y+r*.12,r/30):'')+'</g>';
+}
+function skewer(x,y,rot,f){
+  var g='<g transform="translate('+x+','+y+') rotate('+rot+')">'+
+    '<rect x="-1.4" y="-32" width="2.8" height="66" rx="1.4" fill="#e3c08a"/>';
+  [-26,-12,2].forEach(function(cy){
+    g+='<rect x="-9" y="'+cy+'" width="18" height="12.5" rx="5" fill="#c0633a" stroke="#8e3e1e" stroke-width="1.6"/>'+
+       '<path d="M-6 '+(cy+3)+' h8" stroke="#f3a876" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>';
+  });
+  if(f) g+=face(0,-6.5,.45,'#2e140a');
+  return g+'</g>';
+}
+function teaCup(x,y,s,f){
+  return '<g transform="translate('+x+','+y+') scale('+s+')">'+
+    '<rect x="3" y="-38" width="4.5" height="26" rx="2" fill="#ff8fb0" transform="rotate(14)"/>'+
+    '<path d="M-15 -22 L15 -22 L10.5 23 Q0 27 -10.5 23 Z" fill="#ff9a3c" stroke="#e0782a" stroke-width="2" stroke-linejoin="round"/>'+
+    '<path d="M-15 -22 L15 -22 L14.1 -13 L-14.1 -13 Z" fill="#fff4e2"/>'+
+    '<path d="M-12 -13 q4 4 8 0 q4 4 8 0 q4 4 8 0" stroke="#ffd9b0" stroke-width="2" fill="none"/>'+
+    '<rect x="-10" y="-10" width="6" height="6" rx="2" fill="#fff" opacity=".45"/>'+
+    '<rect x="3" y="13" width="6" height="6" rx="2" fill="#fff" opacity=".35"/>'+
+    '<rect x="-16.5" y="-25" width="33" height="4" rx="2" fill="#fffdf8" stroke="#e8d6bc" stroke-width="1"/>'+
+    (f?face(0,3,.55,'#5a2a10'):'')+'</g>';
+}
+var ART={
+  krok:function(){
+    return shadow()+leaf()+krokCup(32,58,19,true)+krokCup(68,58,19,false)+steam(45,34)+steam(57,30);
+  },
+  moping:function(){
+    return shadow()+leaf()+skewer(30,50,-16,false)+skewer(70,50,16,false)+skewer(50,46,0,true)+spark(86,26,5,.85);
+  },
+  lukchup:function(){
+    return shadow()+plate()+
+      '<circle cx="66" cy="40" r="11" fill="#8a4aa0" stroke="#6a3380" stroke-width="1.8"/>'+
+      '<path d="M60 31 l6 4 6-4 -2 6 -4-2 -4 2z" fill="#69c993"/>'+
+      '<ellipse cx="62" cy="38" rx="3" ry="2" fill="#fff" opacity=".55"/>'+
+      '<path d="M24 62 q-4-18 12-22 q14-2 16 12 q2 14-14 16 q-10 1-14-6z" fill="#ffcf4a" stroke="#e0a32a" stroke-width="2"/>'+
+      '<path d="M38 40 q4-8 12-6 q-4 7-12 6z" fill="#69c993"/>'+
+      '<ellipse cx="30" cy="48" rx="3.2" ry="2" fill="#fff" opacity=".6"/>'+
+      '<path d="M58 66 q10-2 18-14 q4-6 8-4 q-2 14-14 20 q-8 3-12-2z" fill="#ff5a4e" stroke="#d63a30" stroke-width="2"/>'+
+      '<path d="M84 48 q2-6 6-7" stroke="#4fa86a" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+      '<ellipse cx="72" cy="58" rx="3" ry="1.6" fill="#fff" opacity=".55" transform="rotate(-35 72 58)"/>'+
+      face(37,55,.6,'#5a3a10');
+  },
+  tea1:function(){ return shadow()+teaCup(50,52,1,true); },
+  tea2:function(){ return shadow()+teaCup(68,57,.8,false)+teaCup(37,54,.9,true); },
+  tea3:function(){ return shadow()+teaCup(27,60,.7,false)+teaCup(73,60,.7,false)+teaCup(50,52,.84,true); },
+  khaopad:function(){
+    return shadow()+plate()+dome('#ffd27a','#e0a845')+
+      '<circle cx="34" cy="58" r="1.4" fill="#e8a94a"/><circle cx="62" cy="54" r="1.4" fill="#e8a94a"/><circle cx="46" cy="50" r="1.4" fill="#e8a94a"/><circle cx="70" cy="64" r="1.4" fill="#e8a94a"/>'+
+      '<circle cx="40" cy="52" r="2.4" fill="#6cc48a"/><circle cx="60" cy="49" r="2.2" fill="#6cc48a"/><circle cx="68" cy="58" r="2" fill="#6cc48a"/>'+
+      '<rect x="52" y="48" width="4" height="4" rx="1" fill="#ff8f3c"/><rect x="30" y="61" width="4" height="4" rx="1" fill="#ff8f3c"/>'+
+      '<path d="M70 74 q6-14 18-6 z" fill="#c4ea7a" stroke="#86bd3e" stroke-width="1.8" stroke-linejoin="round"/>'+
+      '<circle cx="18" cy="73" r="6" fill="#e6f7d2" stroke="#5fae6e" stroke-width="1.8"/><circle cx="18" cy="73" r="2.6" fill="#f6fbe9"/>'+
+      steam(50,40)+face(50,62,.78,'#5a3a1a');
+  },
+  mangai:function(){
+    var s='';
+    for(var i=0;i<4;i++){
+      s+='<rect x="'+(29+i*10.5)+'" y="'+(44+(i===0||i===3?3:0))+'" width="11" height="15" rx="4" fill="#fff0d6" stroke="#e2bf8f" stroke-width="1.5"/>'+
+         '<rect x="'+(29+i*10.5)+'" y="'+(44+(i===0||i===3?3:0))+'" width="11" height="3.5" rx="1.7" fill="#f6cf8e"/>';
+    }
+    return shadow()+plate()+dome('#fff6e0','#e6d0a6')+s+
+      '<ellipse cx="46" cy="42" rx="3" ry="1.8" fill="#57b578"/><ellipse cx="53" cy="41" rx="3" ry="1.8" fill="#57b578" transform="rotate(30 53 41)"/>'+
+      '<circle cx="17" cy="72" r="6" fill="#e6f7d2" stroke="#5fae6e" stroke-width="1.8"/><circle cx="17" cy="72" r="2.6" fill="#f6fbe9"/>'+
+      '<ellipse cx="84" cy="69" rx="8" ry="4.5" fill="#fffdf8" stroke="#c9dcf3" stroke-width="1.6"/><ellipse cx="84" cy="68" rx="6" ry="3" fill="#a8742f"/>'+
+      face(50,66,.7,'#5a3a1a');
+  },
+  kaprao:function(){
+    return shadow()+plate()+dome('#fffbf2','#e8dcc6')+
+      '<path d="M50 54 q8-14 24-8 q8 6 2 16 q-12 6-26-8z" fill="#9a5a34" stroke="#74401f" stroke-width="1.8"/>'+
+      '<circle cx="60" cy="52" r="1.3" fill="#6e3a1c"/><circle cx="68" cy="57" r="1.3" fill="#6e3a1c"/><circle cx="64" cy="48" r="1.3" fill="#6e3a1c"/>'+
+      '<ellipse cx="62" cy="47" rx="5" ry="2.6" fill="#3fa85a" transform="rotate(-25 62 47)"/>'+
+      '<ellipse cx="71" cy="54" rx="5" ry="2.6" fill="#3fa85a" transform="rotate(30 71 54)"/>'+
+      '<ellipse cx="57" cy="57" rx="4.4" ry="2.3" fill="#4cbb66" transform="rotate(-10 57 57)"/>'+
+      '<circle cx="76" cy="47" r="2" fill="none" stroke="#ff4a3a" stroke-width="1.6"/>'+
+      '<path d="M22 54 q-4-14 10-17 q14-3 18 8 q4 12-10 14 q-14 2-18-5z" fill="#fffefa" stroke="#eab874" stroke-width="1.8"/>'+
+      '<circle cx="36" cy="47" r="7" fill="#ffb52e" stroke="#f09a1a" stroke-width="1.4"/>'+
+      '<ellipse cx="33.6" cy="44.8" rx="2.2" ry="1.4" fill="#fff" opacity=".85"/>'+
+      steam(70,36)+face(44,66,.7,'#5a3a1a');
+  },
+  prik:function(){
+    return shadow()+
+      '<path d="M22 54 h56 q-2 24-28 24 t-28-24z" fill="#fffdf8" stroke="#c9dcf3" stroke-width="2.4"/>'+
+      '<path d="M30 72 q20 5 40 0" stroke="#8fb3e8" stroke-width="1.6" fill="none" stroke-dasharray="3 3"/>'+
+      '<ellipse cx="50" cy="54" rx="28" ry="7" fill="#c9823a" stroke="#a8662a" stroke-width="1.8"/>'+
+      '<ellipse cx="44" cy="52.5" rx="10" ry="2.2" fill="#e8a65a" opacity=".6"/>'+
+      '<circle cx="40" cy="54" r="3.2" fill="none" stroke="#ff4a3a" stroke-width="1.7"/>'+
+      '<circle cx="56" cy="56" r="3.2" fill="none" stroke="#ff4a3a" stroke-width="1.7"/>'+
+      '<circle cx="64" cy="52" r="3" fill="none" stroke="#ff4a3a" stroke-width="1.7"/>'+
+      '<circle cx="48" cy="57" r="3" fill="none" stroke="#4fbf5f" stroke-width="1.7"/>'+
+      '<ellipse cx="33" cy="56" rx="2.6" ry="1.6" fill="#fff7e6"/>'+
+      '<path d="M74 38 q8-2 12-12 q3-4 6-2 q-2 12-12 17 q-6 2-6-3z" fill="#ff5a4e" stroke="#d63a30" stroke-width="1.6"/>'+
+      '<path d="M92 24 q1-4 4-5" stroke="#4fa86a" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
+      spark(20,38,5,.8)+face(50,64,.68,'#4a3a2e');
+  },
+  spoon:function(){
+    return shadow()+
+      '<rect x="27" y="22" width="46" height="62" rx="10" fill="#ffd6e0" opacity=".65"/>'+
+      '<g transform="rotate(24 50 54)">'+
+        '<rect x="47" y="44" width="6.5" height="40" rx="3.2" fill="#e6ecf6" stroke="#93a3bf" stroke-width="1.6"/>'+
+        '<rect x="41" y="30" width="18.5" height="16" rx="6" fill="#e6ecf6" stroke="#93a3bf" stroke-width="1.6"/>'+
+        '<rect x="41.5" y="12" width="4" height="22" rx="2" fill="#e6ecf6" stroke="#93a3bf" stroke-width="1.4"/>'+
+        '<rect x="48.2" y="12" width="4" height="22" rx="2" fill="#e6ecf6" stroke="#93a3bf" stroke-width="1.4"/>'+
+        '<rect x="54.9" y="12" width="4" height="22" rx="2" fill="#e6ecf6" stroke="#93a3bf" stroke-width="1.4"/>'+
+      '</g>'+
+      '<g transform="rotate(-24 50 54)">'+
+        '<rect x="47" y="44" width="6.5" height="40" rx="3.2" fill="#eef3fa" stroke="#93a3bf" stroke-width="1.6"/>'+
+        '<ellipse cx="50.2" cy="32" rx="12.5" ry="15.5" fill="#f4f8fd" stroke="#93a3bf" stroke-width="1.8"/>'+
+        '<ellipse cx="45.5" cy="25" rx="3.4" ry="5" fill="#fff" opacity=".9"/>'+
+        face(50.2,34,.42,'#4a5670')+
+      '</g>'+
+      spark(80,72,6,.95)+spark(20,30,4,.8);
+  },
+  mango:function(){
+    return shadow()+leaf()+
+      '<path d="M14 76 q0-24 22-24 t22 24 z" fill="#fffaf2" stroke="#e8dcc6" stroke-width="2"/>'+
+      '<path d="M18 64 q4-9 18-11 q14 2 18 11 q-4 4-8 0 q-4 5-9 0 q-5 4-10 0 q-5 4-9 0z" fill="#ffffff" stroke="#f1e6d2" stroke-width="1"/>'+
+      '<circle cx="28" cy="58" r="1.6" fill="#f2c94c"/><circle cx="34" cy="55" r="1.6" fill="#f2c94c"/><circle cx="40" cy="58" r="1.6" fill="#f2c94c"/><circle cx="31" cy="61" r="1.6" fill="#f2c94c"/>'+
+      '<path d="M48 74 q-2-26 22-30 q18-2 18 14 q0 18-22 18z" fill="#ffc93c" stroke="#e8a21e" stroke-width="2.2"/>'+
+      '<path d="M58 52 q6 10 2 22 M70 47 q6 12 2 28 M80 50 q4 10 0 22" stroke="#f0ae2a" stroke-width="1.4" fill="none" opacity=".75"/>'+
+      '<ellipse cx="62" cy="50" rx="5" ry="2.6" fill="#fff6c8" opacity=".8" transform="rotate(-20 62 50)"/>'+
+      spark(86,32,5,.85)+face(68,61,.7,'#6a4410');
+  }
+};
+var ARTCACHE={};
+function artSVG(type){
+  if(ARTCACHE[type]) return ARTCACHE[type];
+  var fn=ART[type];
+  var s='<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+(fn?fn():'<circle cx="50" cy="50" r="28" fill="#ccc"/>')+'</svg>';
+  ARTCACHE[type]=s; return s;
+}
+
+/* ======================================================
+   3) CARDS + SCORING (mechanics identical to previous build)
+   ====================================================== */
+var CARDS={
+  krok:{th:'ขนมครก',en:'Khanom Krok',hint:'ครบคู่ = 5',color:'#f0a84e'},
+  moping:{th:'หมูปิ้ง',en:'Moo Ping',hint:'ครบ 3 ไม้ = 10',color:'#d0703f'},
+  lukchup:{th:'ลูกชุบ',en:'Luk Chup',hint:'1/3/6/10/15',color:'#ff9ec0'},
+  tea1:{th:'ชาไทย ×1',en:'Thai Tea',hint:'แก้วมากสุด 6/3',color:'#ff9a3c',tea:1},
+  tea2:{th:'ชาไทย ×2',en:'Thai Tea',hint:'แก้วมากสุด 6/3',color:'#ff9a3c',tea:2},
+  tea3:{th:'ชาไทย ×3',en:'Thai Tea',hint:'แก้วมากสุด 6/3',color:'#ff9a3c',tea:3},
+  khaopad:{th:'ข้าวผัด',en:'Fried Rice',hint:'1 คะแนน',color:'#ffd166',rice:1},
+  mangai:{th:'ข้าวมันไก่',en:'Chicken Rice',hint:'2 คะแนน',color:'#f2cf8f',rice:2},
+  kaprao:{th:'กะเพราไข่ดาว',en:'Pad Kra Pao',hint:'3 คะแนน',color:'#6cc46a',rice:3},
+  prik:{th:'พริกน้ำปลา',en:'Prik Nam Pla',hint:'จานข้าวถัดไป ×3',color:'#ff5a4e'},
+  spoon:{th:'ช้อนส้อม',en:'Spoon & Fork',hint:'ตาหน้าหยิบ 2',color:'#9fb4d6'},
+  mango:{th:'ข้าวเหนียวมะม่วง',en:'Mango Sticky Rice',hint:'จบเกม +6/−6',color:'#ffc93c'}
+};
+var DECK_SPEC=[['krok',14],['moping',14],['lukchup',14],['tea2',12],['tea3',8],['tea1',6],
+  ['mangai',10],['kaprao',5],['khaopad',5],['prik',6],['spoon',4],['mango',10]]; // 108
+var DEAL={2:10,3:9,4:8,5:7};
+var AVATARS=['🐘','🐱','🐰','🐯','🐸','🦉','🐨','🐻'];
+var BOT_NAMES=['มะม่วง','ข้าวตัง','ส้มตำ','ลอดช่อง','ทองหยิบ','ฝอยทอง','มะพร้าว','ขนุน'];
+var BOT_TAG=' 🤖';
+
+function buildDeck(){ var d=[]; DECK_SPEC.forEach(function(s){ for(var i=0;i<s[1];i++) d.push({id:uid(),type:s[0]}); }); return d; }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t; } return a; }
+
+function scoreTypes(types){
+  var pair=0,trio=0,col=0,pts=0,boost=0;
+  for(var i=0;i<types.length;i++){
+    var k=types[i],def=CARDS[k];
+    if(k==='krok')pair++;
+    else if(k==='moping')trio++;
+    else if(k==='lukchup')col++;
+    else if(k==='prik')boost++;
+    else if(def&&def.rice){ if(boost>0){pts+=def.rice*3;boost--;} else pts+=def.rice; }
+  }
+  pts+=Math.floor(pair/2)*5;
+  pts+=Math.floor(trio/3)*10;
+  pts+=[0,1,3,6,10,15][Math.min(col,5)];
+  return pts;
+}
+function teaOf(types){ var n=0; for(var i=0;i<types.length;i++){ var d=CARDS[types[i]]; if(d&&d.tea)n+=d.tea; } return n; }
+function prikPending(types){
+  var w=0;
+  for(var i=0;i<types.length;i++){ var k=types[i],d=CARDS[k];
+    if(k==='prik')w++; else if(d&&d.rice&&w>0)w--; }
+  return w;
+}
+function teaScores(list){
+  var counts=list.map(teaOf), res=list.map(function(){return 0;});
+  var max=Math.max.apply(null,counts);
+  if(!(max>0)) return res;
+  var firsts=[]; counts.forEach(function(c,i){ if(c===max)firsts.push(i); });
+  var f=Math.floor(6/firsts.length); firsts.forEach(function(i){res[i]=f;});
+  if(firsts.length===1){
+    var second=-1;
+    counts.forEach(function(c,i){ if(i!==firsts[0]&&c>0&&c>second) second=c; });
+    if(second>0){
+      var sec=[]; counts.forEach(function(c,i){ if(i!==firsts[0]&&c===second)sec.push(i); });
+      var sp=Math.floor(3/sec.length); sec.forEach(function(i){res[i]=sp;});
+    }
+  }
+  return res;
+}
+function mangoScores(counts,n){
+  var res=counts.map(function(){return 0;});
+  var max=Math.max.apply(null,counts),min=Math.min.apply(null,counts);
+  if(max===min) return res;
+  var most=[],least=[];
+  counts.forEach(function(c,i){ if(c===max)most.push(i); if(c===min)least.push(i); });
+  var mp=Math.trunc(6/most.length); most.forEach(function(i){res[i]+=mp;});
+  if(n>2){ var lp=Math.trunc(-6/least.length); least.forEach(function(i){res[i]+=lp;}); }
+  return res;
+}
+
+/* ======================================================
+   4) GLOBAL STATE
+   ====================================================== */
+var MODE='local';          // 'local' | 'host' | 'client'
+var PL=[];
+var S=null;                // authoritative engine state (local/host)
+var V=null;                // current view
+var TOKEN=0;
+var humanRes=null,tapRes=null,pendingPick={};
+var SEL={ids:[],chop:false};
+var CFG={players:3,humans:1};
+var lastPhase='';
+
+function alive(tok){ return S&&S.token===tok&&TOKEN===tok; }
+function waitHuman(){ return new Promise(function(r){ humanRes=r; }); }
+function waitTap(){ return new Promise(function(r){ tapRes=r; }); }
+function resolveTap(){ if(tapRes){ var r=tapRes; tapRes=null; r(true);} }
+function countHumans(){ return PL.filter(function(p){return p.kind==='human';}).length; }
+function firstHumanIdx(){ for(var i=0;i<PL.length;i++) if(PL[i].kind==='human') return i; return 0; }
+function newSeat(i,name,kind,conn){
+  return {idx:i,name:name,av:AVATARS[i%AVATARS.length],kind:kind,connected:true,conn:conn||null,
+    hand:[],played:[],score:0,puddings:0,rounds:[]};
+}
+
+/* ======================================================
+   5) RENDER (view-driven: local / host / client)
+   ====================================================== */
+function cardHTML(type,cls,id,delay){
+  var def=CARDS[type]||{th:'?',hint:'',color:'#999'};
+  var st='--accent:'+def.color+(delay?';animation-delay:'+delay.toFixed(2)+'s':'');
+  return '<div class="card '+(cls||'')+'"'+(id?' data-id="'+id+'"':'')+' style="'+st+'" title="'+esc(def.th+' • '+(def.en||''))+'">'+
+    '<div class="tick">✓</div><div class="art">'+artSVG(type)+'</div>'+
+    '<div class="cap"><div class="nm">'+def.th+'</div><div class="hint">'+def.hint+'</div></div></div>';
+}
+function backHTML(){
+  return '<div class="card back" style="--accent:#ffc861"><div class="art">🛺</div></div>';
+}
+var TILE_ORDER=['krok','moping','lukchup','tea','kaprao','mangai','khaopad','prik','spoon','mango'];
+function tilesHTML(types){
+  var map={},tea=0,rep=null;
+  types.forEach(function(t){ var d=CARDS[t];
+    if(d&&d.tea){ tea+=d.tea; rep=rep||t; } else map[t]=(map[t]||0)+1; });
+  var out='';
+  TILE_ORDER.forEach(function(k){
+    if(k==='tea'){ if(tea>0) out+='<div class="tile">'+artSVG(rep||'tea1')+'<span class="badge">'+tea+'</span></div>'; return; }
+    if(map[k]) out+='<div class="tile">'+artSVG(k)+'<span class="badge">'+map[k]+'</span></div>';
+  });
+  return out||'<span style="font-size:9px;opacity:.4">— ว่าง —</span>';
+}
+function renderView(){
+  if(!V) return;
+  var prev=lastPhase, ph=V.phase;
+
+  /* phase-transition sounds (same on every device, played once) */
+  if(ph!==prev){
+    if(ph==='reveal') AUD.sfx('reveal');
+    else if(ph==='pass') AUD.sfx('pass');
+    else if(ph==='round') AUD.sfx('round');
+    else if(ph==='final') AUD.sfx('win');
+  }
+
+  /* keep local selection valid for current hand */
+  SEL.ids=SEL.ids.filter(function(id){ return V.hand.some(function(c){return c.id===id;}); });
+  if(!V.canPick){ SEL.ids=[]; SEL.chop=false; }
+  if(SEL.chop&&!V.canChop){ SEL.chop=false; if(SEL.ids.length>1) SEL.ids=SEL.ids.slice(0,1); }
+
+  /* HUD */
+  $('#pillRound').textContent='รอบ '+Math.max(1,V.round)+'/3';
+  var tp=$('#pillTurn');
+  tp.textContent='ตา '+Math.max(1,V.turn)+'/'+V.handSize;
+  tp.className='pill'+(ph==='select'?' hot':'');
+  var pn=$('#pillNet');
+  $('#hud').classList.toggle('online',MODE!=='local');
+  if(MODE==='local'){ pn.style.display='none'; }
+  else{ pn.style.display=''; pn.textContent='🌐 '+(V.code||''); pn.title=(MODE==='host'?'คุณเป็นเจ้าบ้าน':'เชื่อมต่อกับเจ้าบ้าน'); }
+
+  /* seats */
+  var others=V.players.filter(function(p){return p.idx!==V.me;});
+  var se=$('#seats');
+  se.style.gridTemplateColumns='repeat('+Math.max(1,others.length)+',minmax(0,1fr))';
+  se.innerHTML=others.map(function(p){
+    var types=p.played.map(function(c){return c.t;});
+    return '<div class="seat'+(p.picked?' done':'')+(p.connected?'':' off')+'">'+
+      '<div class="stamp">✅</div>'+
+      '<div class="seat-top"><span class="seat-av">'+p.av+'</span>'+
+      '<span class="seat-nm">'+esc(p.name)+'</span><span class="seat-sc">'+p.score+'</span></div>'+
+      '<div class="seat-meta"><span class="mchip">🥭 '+p.puddings+'</span>'+
+      '<span class="mchip">🧋 '+teaOf(types)+'</span><span class="mchip">มือ '+p.handCount+'</span>'+
+      (p.connected?'':'<span class="mchip">⚠️ หลุด</span>')+'</div>'+
+      '<div class="seat-tiles">'+tilesHTML(types)+'</div></div>';
+  }).join('');
+
+  /* my tray */
+  var me=V.players[V.me];
+  if(me){
+    $('#myName').textContent='ถาดของ '+me.name;
+    var types=me.played.map(function(c){return c.t;});
+    var pend=prikPending(types);
+    $('#myChips').innerHTML='<span class="chip gold">คะแนนรวม '+me.score+'</span>'+
+      '<span class="chip">ถาดนี้ '+scoreTypes(types)+'</span>'+
+      '<span class="chip">🧋 '+teaOf(types)+'</span>'+
+      '<span class="chip">🥭 '+me.puddings+'</span>'+
+      (pend>0?'<span class="chip gold">🌶️ พริกน้ำปลารอ '+pend+'</span>':'');
+    $('#myTableau').innerHTML=me.played.length
+      ? me.played.map(function(c){ return cardHTML(c.t,'mini'+(c.n?' new':'')); }).join('')
+      : '<div class="empty">ถาดยังว่างอยู่ — เลือกเมนูจากมือด้านล่างเลย 🍽️</div>';
+  }
+
+  /* reveal */
+  var rv=$('#reveal');
+  if(ph==='reveal'&&V.reveal){
+    $('#revealRow').innerHTML=V.reveal.map(function(r,i){
+      var cards=r.types.length? r.types.map(function(t,k){ return cardHTML(t,'flip',null,i*.05+k*.09); }).join('') : backHTML();
+      return '<div class="rv"><div class="rv-name">'+(r.chop?'🥄 ':'')+r.av+' '+esc(r.name)+'</div><div class="rv-cards">'+cards+'</div></div>';
+    }).join('');
+    rv.classList.add('show');
+  } else rv.classList.remove('show');
+
+  /* hand */
+  var row=$('#handRow'),hand=$('#hand');
+  row.innerHTML=V.hand.length
+    ? V.hand.map(function(c){ return cardHTML(c.t,SEL.ids.indexOf(c.id)>=0?'sel':'',c.id); }).join('')
+    : '<div class="empty">'+(ph==='handoff'?'🙈 ซ่อนไพ่ไว้ก่อน':'ไม่มีไพ่บนมือ')+'</div>';
+  hand.classList.toggle('locked',!V.canPick);
+  row.classList.toggle('passing',ph==='pass');
+  if(prev==='pass'&&ph!=='pass'){ row.classList.remove('passin'); void row.offsetWidth; row.classList.add('passin'); }
+
+  var lbl=$('#handLabel');
+  if(ph==='select'&&V.canPick) lbl.textContent=SEL.chop?'🥄 โหมดช้อนส้อม: เลือก 2 ใบ':'เลือกเมนู 1 ใบ';
+  else if(ph==='select') lbl.innerHTML='<span class="spin"></span> เลือกแล้ว — รอเพื่อน ๆ...';
+  else if(ph==='bots') lbl.innerHTML='<span class="spin"></span> บอทกำลังเลือกเมนู...';
+  else if(ph==='reveal') lbl.textContent='✨ เปิดเมนูพร้อมกัน!';
+  else if(ph==='pass') lbl.textContent='📨 กำลังส่งไพ่ไปทางซ้าย...';
+  else if(ph==='handoff') lbl.textContent='รอเปลี่ยนผู้เล่น...';
+  else if(ph==='round') lbl.textContent='🍚 สรุปคะแนนรอบ';
+  else if(ph==='final') lbl.textContent='🏁 จบเกม';
+  else lbl.textContent='🍽️ กำลังจัดไพ่...';
+
+  var bc=$('#btnChop');
+  bc.style.display=V.canChop?'':'none';
+  bc.textContent=SEL.chop?'🥄 ยกเลิกช้อนส้อม':'🥄 ใช้ช้อนส้อม';
+  bc.classList.toggle('gold',SEL.chop);
+  var need=SEL.chop?2:1;
+  var cf=$('#btnConfirm');
+  cf.style.display=V.canPick?'':'none';
+  cf.disabled=!V.canPick||SEL.ids.length!==need;
+
+  /* overlays */
+  $('#ovHandoff').classList.toggle('show',ph==='handoff'&&!!V.handoff);
+  if(ph==='handoff'&&V.handoff){ $('#hoAv').textContent=V.handoff.av; $('#hoName').textContent=V.handoff.name; }
+
+  var orv=$('#ovRound');
+  if(ph==='round'&&V.summary){
+    if(prev!=='round'){
+      $('#roundTitle').textContent='🍚 สรุปรอบที่ '+V.summary.round;
+      var h='<tr><th>ผู้เล่น</th><th>ถาด</th><th>🧋</th><th>รอบนี้</th><th>รวม</th><th>🥭</th></tr>';
+      V.summary.rows.forEach(function(r){
+        h+='<tr class="'+(r.idx===V.me?'me':'')+'"><td class="nm">'+r.av+' '+esc(r.name)+'</td><td>'+r.base+'</td><td>'+r.tea+'</td>'+
+           '<td><b>'+r.total+'</b></td><td style="color:var(--gold)"><b>'+r.score+'</b></td><td>'+r.pud+'</td></tr>';
+      });
+      $('#roundTable').innerHTML=h;
+    }
+    var rb=$('#roundBtn');
+    rb.disabled=!V.isHost;
+    rb.textContent=V.isHost?(V.summary.round<3?'▶ เริ่มรอบที่ '+(V.summary.round+1):'🏁 ดูคะแนนสุดท้าย'):'รอเจ้าบ้านกดต่อ...';
+    orv.classList.add('show');
+  } else orv.classList.remove('show');
+
+  var ofv=$('#ovFinal');
+  if(ph==='final'&&V.final){
+    if(prev!=='final'){
+      $('#finalTitle').textContent=V.final.title;
+      $('#finalSub').textContent=V.final.sub;
+      var f='<tr><th>ผู้เล่น</th><th>R1</th><th>R2</th><th>R3</th><th>🥭</th><th>รวม</th></tr>';
+      V.final.rows.forEach(function(r){
+        f+='<tr class="'+(r.win?'win ':'')+(r.idx===V.me?'me':'')+'"><td class="nm">'+(r.win?'👑 ':'')+r.av+' '+esc(r.name)+'</td>'+
+           '<td>'+r.r1+'</td><td>'+r.r2+'</td><td>'+r.r3+'</td><td>'+(r.pudPts>0?'+':'')+r.pudPts+' ('+r.pud+')</td>'+
+           '<td style="color:var(--gold)"><b>'+r.final+'</b></td></tr>';
+      });
+      $('#finalTable').innerHTML=f;
+      confetti();
+    }
+    $('#btnAgain').style.display=V.isHost?'':'none';
+    ofv.classList.add('show');
+  } else ofv.classList.remove('show');
+
+  lastPhase=ph;
+}
+$('#handRow').addEventListener('animationend',function(e){ if(e.target===this) this.classList.remove('passin'); });
+
+/* ======================================================
+   6) BOT AI
+   ====================================================== */
+function botValue(type,types,turnsLeft,round){
+  var def=CARDS[type];
+  var cnt=function(k){ var n=0; types.forEach(function(t){if(t===k)n++;}); return n; };
+  if(type==='krok'){ var n=cnt('krok'); return (n%2===1)?5.6:(turnsLeft>=2?3.0:0.6); }
+  if(type==='moping'){ var m=cnt('moping')%3;
+    if(m===2)return 10.4; if(m===1)return turnsLeft>=2?4.6:0.4; return turnsLeft>=3?3.1:0.3; }
+  if(type==='lukchup'){ var d=cnt('lukchup'),tb=[0,1,3,6,10,15];
+    var g=tb[Math.min(d+1,5)]-tb[Math.min(d,5)]; return g>0?g+0.3:0.4; }
+  if(def.tea) return def.tea*1.35+(turnsLeft<=3?0.5:0);
+  if(def.rice) return prikPending(types)>0?def.rice*3+0.4:def.rice+0.25;
+  if(type==='prik') return turnsLeft>=3?4.2:0.5;
+  if(type==='spoon') return turnsLeft>=4?2.3:0.3;
+  if(type==='mango') return round===3?4.6:3.3;
+  return 1;
+}
+function botPick(p){
+  if(!p||!p.hand.length) return null;
+  var types=p.played.map(function(c){return c.type;});
+  var tl=S.handSize-S.turn+1;
+  var sc=p.hand.map(function(c){ return {c:c,v:botValue(c.type,types,tl,S.round)+Math.random()*0.55}; })
+                .sort(function(a,b){return b.v-a.v;});
+  var hasSpoon=types.indexOf('spoon')>=0;
+  if(hasSpoon&&p.hand.length>=2&&sc.length>=2){
+    var combo=sc[0].v+sc[1].v;
+    if(combo>=10.5||(tl<=3&&combo>=7)) return orderPick([sc[0].c,sc[1].c],true);
+  }
+  return {ids:[sc[0].c.id],chop:false};
+}
+function orderPick(cards,chop){
+  var a=cards[0],b=cards[1];
+  if(b&&b.type==='prik'&&CARDS[a.type]&&CARDS[a.type].rice){ var t=a;a=b;b=t; } // sauce before rice
+  return {ids:b?[a.id,b.id]:[a.id],chop:!!chop};
+}
+
+/* ======================================================
+   7) ENGINE (host-authoritative)
+   ====================================================== */
+function makeView(idx,forRemote){
+  var me=S.players[idx];
+  var v={
+    me:idx,round:S.round,turn:S.turn,handSize:S.handSize,phase:S.phase,code:NET.code,
+    players:S.players.map(function(p){
+      return {idx:p.idx,name:p.name,av:p.av,kind:p.kind,connected:p.connected!==false,
+        played:p.played.map(function(c){return {t:c.type,n:c.fresh?1:0};}),
+        score:p.score,puddings:p.puddings,handCount:p.hand.length,picked:!!S.picks[p.idx]};
+    }),
+    hand:(me&&S.phase!=='handoff')?me.hand.map(function(c){return {id:c.id,t:c.type};}):[],
+    reveal:S.reveal,summary:S.summary,final:S.final,handoff:S.handoff,
+    canPick:false,canChop:false,isHost:!forRemote
+  };
+  if(me&&S.phase==='select'&&!S.picks[idx]&&me.hand.length>0&&me.kind!=='bot'){
+    v.canPick=true;
+    v.canChop=me.played.some(function(c){return c.type==='spoon';})&&me.hand.length>=2;
+  }
+  return v;
+}
+function pushViews(){
+  if(!S) return;
+  var localIdx=(MODE==='local')?S.viewer:0;
+  V=makeView(localIdx,false);
+  renderView();
+  if(MODE==='host'){
+    S.players.forEach(function(p){
+      if(p.kind==='remote'&&p.conn) NET.send(p.conn,{t:'view',v:makeView(p.idx,true)});
+    });
+  }
+}
+function findInHand(p,id){ for(var i=0;i<p.hand.length;i++) if(p.hand[i].id===id) return p.hand[i]; return null; }
+function validatePick(p,ids,chop){
+  if(!p||!ids||!ids.length) return null;
+  var u=[]; ids.forEach(function(x){ if(u.indexOf(x)<0)u.push(x); });
+  if(u.length!==(chop?2:1)) return null;
+  var cards=u.map(function(id){return findInHand(p,id);});
+  for(var i=0;i<cards.length;i++) if(!cards[i]) return null;
+  if(chop){
+    if(!p.played.some(function(c){return c.type==='spoon';})) return null;
+    if(p.hand.length<2) return null;
+  }
+  return orderPick(cards,chop);
+}
+function startMatch(){
+  TOKEN++;
+  pendingPick={};
+  PL.forEach(function(p,i){ p.idx=i; p.hand=[];p.played=[];p.score=0;p.puddings=0;p.rounds=[]; });
+  S={token:TOKEN,players:PL,handSize:DEAL[PL.length]||9,deck:shuffle(buildDeck()),
+     round:0,turn:0,phase:'idle',picks:{},reveal:null,summary:null,final:null,handoff:null,
+     viewer:(MODE==='local'?firstHumanIdx():0)};
+  lastPhase='';
+  SEL={ids:[],chop:false};
+  showScreen('game');
+  runGame();
+}
+function dealRound(){
+  S.players.forEach(function(p){ p.played=[]; p.hand=S.deck.splice(0,S.handSize); });
+  S.picks={}; S.reveal=null;
+}
+function waitRemote(p,tok){
+  return new Promise(function(res){
+    pendingPick[p.idx]=res;
+    var t0=Date.now(),offSince=0;
+    var iv=setInterval(function(){
+      if(!alive(tok)){ clearInterval(iv); if(pendingPick[p.idx]===res){ delete pendingPick[p.idx]; } res(null); return; }
+      if(pendingPick[p.idx]!==res){ clearInterval(iv); return; } // already resolved
+      if(p.connected===false){ if(!offSince) offSince=Date.now(); } else offSince=0;
+      if((offSince&&Date.now()-offSince>3500)||Date.now()-t0>120000){
+        clearInterval(iv); delete pendingPick[p.idx];
+        res(botPick(p));
+      }
+    },400);
+  });
+}
+async function collectPicks(tok){
+  S.picks={}; S.reveal=null;
+  if(MODE==='local'){
+    for(var i=0;i<S.players.length;i++){
+      var p=S.players[i];
+      if(p.kind!=='human') continue;
+      S.viewer=p.idx; SEL={ids:[],chop:false};
+      if(countHumans()>1){
+        S.phase='handoff'; S.handoff={name:p.name,av:p.av}; pushViews();
+        await waitTap(); if(!alive(tok)) return false;
+        S.handoff=null;
+      }
+      S.phase='select'; pushViews();
+      var pk=await waitHuman();
+      if(!alive(tok)||!pk) return false;
+      S.picks[p.idx]=pk; SEL={ids:[],chop:false};
+      pushViews();
+    }
+    S.viewer=firstHumanIdx();
+    S.phase='bots'; pushViews();
+    await sleep(420); if(!alive(tok)) return false;
+    S.players.forEach(function(p){ if(p.kind==='bot'){ var b=botPick(p); if(b)S.picks[p.idx]=b; } });
+    pushViews();
+    return true;
+  }
+  /* HOST: everyone picks in parallel */
+  S.phase='select'; SEL={ids:[],chop:false}; pushViews();
+  var jobs=S.players.map(function(p){
+    if(p.kind==='bot'){
+      return sleep(500+Math.random()*1300).then(function(){
+        if(!alive(tok))return;
+        var b=botPick(p); if(b){S.picks[p.idx]=b; pushViews();}
+      });
+    }
+    if(p.kind==='human'){
+      return waitHuman().then(function(pk){
+        if(!alive(tok)||!pk)return;
+        S.picks[p.idx]=pk; SEL={ids:[],chop:false}; pushViews();
+      });
+    }
+    return waitRemote(p,tok).then(function(pk){
+      if(!alive(tok))return;
+      S.picks[p.idx]=pk||botPick(p); pushViews();
+    });
+  });
+  await Promise.all(jobs);
+  if(!alive(tok)) return false;
+  S.players.forEach(function(p){ if(!S.picks[p.idx]){ var b=botPick(p); if(b)S.picks[p.idx]=b; } });
+  return true;
+}
+async function doReveal(tok){
+  S.phase='reveal';
+  S.reveal=S.players.map(function(p){
+    var pk=S.picks[p.idx],types=[];
+    if(pk) pk.ids.forEach(function(id){ var c=findInHand(p,id); if(c)types.push(c.type); });
+    return {name:p.name,av:p.av,chop:!!(pk&&pk.chop),types:types};
+  });
+  pushViews();
+  await sleep(1500);
+  if(!alive(tok)) return false;
+  S.reveal=null;
+  return true;
+}
+function applyPicks(){
+  S.players.forEach(function(p){ p.played.forEach(function(c){ delete c.fresh; }); });
+  S.players.forEach(function(p){
+    var pk=S.picks[p.idx]; if(!pk) return;
+    var taken=[];
+    pk.ids.forEach(function(id){
+      for(var i=0;i<p.hand.length;i++) if(p.hand[i].id===id){ taken.push(p.hand.splice(i,1)[0]); break; }
+    });
+    if(pk.chop&&taken.length===2){
+      for(var j=0;j<p.played.length;j++) if(p.played[j].type==='spoon'){ p.hand.push(p.played.splice(j,1)[0]); break; }
+    }
+    if(taken.length===2&&taken[1].type==='prik'&&CARDS[taken[0].type]&&CARDS[taken[0].type].rice){
+      var tt=taken[0]; taken[0]=taken[1]; taken[1]=tt;
+    }
+    taken.forEach(function(c){ c.fresh=true; p.played.push(c); });
+  });
+  S.picks={};
+  S.phase='resolve';
+  pushViews();
+}
+async function passHands(tok){
+  S.players.forEach(function(p){ p.played.forEach(function(c){ delete c.fresh; }); });
+  S.phase='pass'; pushViews();
+  await sleep(360); if(!alive(tok)) return false;
+  var n=S.players.length,hands=S.players.map(function(p){return p.hand;});
+  for(var i=0;i<n;i++) S.players[(i+1)%n].hand=hands[i];
+  S.phase='dealt'; pushViews();
+  await sleep(260);
+  return alive(tok);
+}
+async function endRound(tok){
+  var tk=teaScores(S.players.map(function(p){ return p.played.map(function(c){return c.type;}); }));
+  var rows=[];
+  S.players.forEach(function(p,i){
+    var types=p.played.map(function(c){return c.type;});
+    var base=scoreTypes(types),total=base+tk[i];
+    p.score+=total; p.rounds.push(total);
+    types.forEach(function(t){ if(t==='mango')p.puddings++; });
+    rows.push({idx:p.idx,name:p.name,av:p.av,base:base,tea:tk[i],total:total,score:p.score,pud:p.puddings});
+  });
+  S.summary={round:S.round,rows:rows};
+  S.phase='round';
+  pushViews();
+  await waitTap();
+  if(!alive(tok)) return false;
+  S.summary=null;
+  S.players.forEach(function(p){ p.played=[]; });
+  return true;
+}
+function buildFinal(){
+  var pud=mangoScores(S.players.map(function(p){return p.puddings;}),S.players.length);
+  S.players.forEach(function(p,i){ p.pudPts=pud[i]; p.finalScore=p.score+pud[i]; });
+  var best=Math.max.apply(null,S.players.map(function(p){return p.finalScore;}));
+  var cands=S.players.filter(function(p){return p.finalScore===best;});
+  if(cands.length>1){
+    var bp=Math.max.apply(null,cands.map(function(p){return p.puddings;}));
+    cands=cands.filter(function(p){return p.puddings===bp;});
+  }
+  var sorted=S.players.slice().sort(function(a,b){ return b.finalScore-a.finalScore||b.puddings-a.puddings; });
+  S.final={
+    title: cands.length>1? '🤝 เสมอกัน! '+cands.map(function(p){return p.name;}).join(' & ')
+                         : '🎉 '+cands[0].av+' '+cands[0].name+' ชนะ!',
+    sub:'ราชาตลาดอร่อย • '+cands[0].finalScore+' คะแนน • ข้าวเหนียวมะม่วง '+cands[0].puddings+' จาน',
+    rows:sorted.map(function(p){
+      return {idx:p.idx,name:p.name,av:p.av,r1:p.rounds[0]||0,r2:p.rounds[1]||0,r3:p.rounds[2]||0,
+        pud:p.puddings,pudPts:p.pudPts,final:p.finalScore,win:cands.indexOf(p)>=0};
+    })
+  };
+}
+async function runGame(){
+  var tok=S.token;
+  try{
+    for(var r=1;r<=3;r++){
+      if(!alive(tok))return;
+      S.round=r; dealRound();
+      for(var t=1;t<=S.handSize;t++){
+        if(!alive(tok))return;
+        S.turn=t;
+        if(!(await collectPicks(tok))||!alive(tok))return;
+        if(!(await doReveal(tok))||!alive(tok))return;
+        applyPicks();
+        await sleep(520);
+        if(!alive(tok))return;
+        if(t<S.handSize){ if(!(await passHands(tok))||!alive(tok))return; }
+      }
+      if(!(await endRound(tok))||!alive(tok))return;
+    }
+    if(!alive(tok))return;
+    buildFinal();
+    S.phase='final';
+    pushViews();
+  }catch(err){
+    console.error('[AROI] engine',err);
+    toast('เกิดข้อผิดพลาดในเกม: '+(err&&err.message?err.message:'unknown'));
+  }
+}
+
+/* ======================================================
+   8) NETWORK — REAL P2P (PeerJS, CDN timeout + fallback)
+   ====================================================== */
+var PEER_SRC=[
+  'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
+  'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js'
+];
+function loadScript(src,ms){
+  return new Promise(function(res,rej){
+    var s=document.createElement('script'),done=false;
+    var to=setTimeout(function(){ if(done)return; done=true; try{s.remove();}catch(e){} rej(new Error('timeout')); },ms||9000);
+    s.src=src; s.async=true; s.crossOrigin='anonymous';
+    s.onload=function(){ if(done)return; done=true; clearTimeout(to); res(true); };
+    s.onerror=function(){ if(done)return; done=true; clearTimeout(to); try{s.remove();}catch(e){} rej(new Error('load-error')); };
+    document.head.appendChild(s);
+  });
+}
+async function ensurePeer(){
+  if(typeof window.Peer==='function') return true;
+  if(!window.RTCPeerConnection){ netStatus('❌ เบราว์เซอร์นี้ไม่รองรับ WebRTC',true); return false; }
+  for(var i=0;i<PEER_SRC.length;i++){
+    try{
+      netStatus('<span class="spin"></span> กำลังโหลดระบบออนไลน์ ('+(i+1)+'/'+PEER_SRC.length+')...');
+      await loadScript(PEER_SRC[i],9000);
+      if(typeof window.Peer==='function') return true;
+    }catch(e){ console.warn('peer load fail',PEER_SRC[i],e.message); }
+  }
+  return false;
+}
+var CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function makeCode(){ var s=''; for(var i=0;i<5;i++) s+=CODE_CHARS.charAt(Math.floor(Math.random()*CODE_CHARS.length)); return s; }
+function hostId(code){ return 'aroimarket-th-v3-'+code; }
+
+var NET={
+  peer:null,code:'',conns:[],hostConn:null,myName:'',myIdx:0,started:false,
+  hb:null,watch:null,lastRx:0,retry:0,
+  send:function(conn,msg){ try{ if(conn&&conn.open) conn.send(msg); }catch(e){ console.warn('send fail',e); } },
+  bcast:function(msg){ this.conns.forEach(function(c){ NET.send(c,msg); }); },
+  reset:function(){
+    if(this.hb){clearInterval(this.hb);this.hb=null;}
+    if(this.watch){clearInterval(this.watch);this.watch=null;}
+    var cs=this.conns; this.conns=[];
+    cs.forEach(function(c){ try{c.close();}catch(e){} });
+    var hc=this.hostConn; this.hostConn=null;
+    if(hc){ try{hc.close();}catch(e){} }
+    if(this.peer){ try{this.peer.destroy();}catch(e){} this.peer=null; }
+    this.code=''; this.started=false; this.retry=0;
+  }
+};
+function netStatus(html,err){ var e=$('#netStatus'); if(!e)return; e.innerHTML=html||''; e.className='netstatus'+(err?' err':''); }
+function lobHint(html,err){ var e=$('#lobHint'); if(!e)return; e.innerHTML=html||''; e.className='netstatus'+(err?' err':''); }
+function lobbyList(){ return PL.map(function(p){ return {idx:p.idx,name:p.name,av:p.av,kind:p.kind,connected:p.connected!==false}; }); }
+function pushLobby(){
+  renderLobby(lobbyList(),NET.code,0,true);
+  PL.forEach(function(p){
+    if(p.kind==='remote'&&p.conn) NET.send(p.conn,{t:'lobby',code:NET.code,players:lobbyList(),you:p.idx});
+  });
+}
+function renderLobby(list,code,you,isHost){
+  $('#lobCode').textContent=code||'-----';
+  $('#lobList').innerHTML=list.map(function(p){
+    var tag=p.kind==='bot'?'<span class="tag bot">บอท</span>'
+           :(p.idx===0?'<span class="tag host">เจ้าบ้าน</span>':'<span class="tag">ผู้เล่น</span>');
+    return '<div class="lob'+(p.connected?'':' off')+'"><span class="av">'+p.av+'</span>'+
+      '<span class="nm">'+esc(p.name)+(p.idx===you?' (คุณ)':'')+'</span>'+tag+
+      (p.connected?'':'<span class="tag">หลุด</span>')+'</div>';
+  }).join('');
+  $('#hostCtrl').style.display=isHost?'':'none';
+  $('#lobShare').style.display=isHost?'':'none';
+  var bs=$('#btnLobbyStart');
+  bs.style.display=isHost?'':'none';
+  bs.disabled=!(isHost&&list.length>=2&&list.length<=5);
+  if(isHost) lobHint(list.length<2?'ต้องมีผู้เล่นอย่างน้อย 2 คน (เพิ่มบอทได้)':'พร้อมเปิดตลาด! ('+list.length+'/5)');
+  else lobHint('<span class="spin"></span> รอเจ้าบ้านเริ่มเกม...');
+}
+/* ---------- HOST ---------- */
+async function hostCreate(){
+  AUD.sfx('tap');
+  var name=($('#inName').value||'').trim().slice(0,12)||'เจ้าบ้าน';
+  netStatus('<span class="spin"></span> กำลังเตรียมห้อง...');
+  var ok=await ensurePeer();
+  if(!ok){ netStatus('❌ โหลดระบบออนไลน์ไม่สำเร็จ — เล่นโหมดออฟไลน์แทนได้เลย',true); AUD.sfx('err'); return; }
+  NET.reset();
+  NET.myName=name;
+  var tries=0;
+  function attempt(){
+    tries++;
+    var code=makeCode(),peer,settled=false,to=null;
+    try{ peer=new window.Peer(hostId(code),{debug:0}); }
+    catch(e){ netStatus('❌ สร้างห้องไม่สำเร็จ: '+e.message,true); return; }
+    to=setTimeout(function(){
+      if(settled)return; settled=true;
+      try{peer.destroy();}catch(e){}
+      netStatus('❌ เชื่อมต่อเซิร์ฟเวอร์จับคู่ไม่สำเร็จ (หมดเวลา) ลองใหม่อีกครั้ง',true);
+    },15000);
+    peer.on('open',function(){
+      if(settled)return; settled=true; clearTimeout(to);
+      NET.peer=peer; NET.code=code;
+      MODE='host'; NET.started=false;
+      PL=[newSeat(0,name,'human',null)];
+      netStatus('');
+      showScreen('lobby');
+      $('#lobTitle').textContent='ห้องของคุณ';
+      pushLobby();
+      AUD.sfx('join');
+      startHostHeartbeat();
+    });
+    peer.on('connection',function(conn){ hookHostConn(conn); });
+    peer.on('error',function(err){
+      var type=err&&err.type;
+      if(type==='unavailable-id'&&!settled&&tries<6){ settled=true; clearTimeout(to); try{peer.destroy();}catch(e){} attempt(); return; }
+      if(!settled){ settled=true; clearTimeout(to); netStatus('❌ ผิดพลาด: '+(type||(err&&err.message)||'unknown'),true); try{peer.destroy();}catch(e){} return; }
+      console.warn('[peer host]',type,err&&err.message);
+      if(type==='network'||type==='server-error'||type==='socket-error') toast('สัญญาณเซิร์ฟเวอร์จับคู่มีปัญหา');
+    });
+    peer.on('disconnected',function(){ try{ if(!peer.destroyed) peer.reconnect(); }catch(e){} });
+  }
+  attempt();
+}
+function seatByConn(conn){ if(!conn)return null; for(var i=0;i<PL.length;i++) if(PL[i].conn===conn) return PL[i]; return null; }
+function hookHostConn(conn){
+  conn.on('open',function(){ if(NET.conns.indexOf(conn)<0) NET.conns.push(conn); });
+  conn.on('data',function(m){ try{ onHostMsg(conn,m); }catch(e){ console.error('host msg',e); } });
+  conn.on('close',function(){ hostDrop(conn); });
+  conn.on('error',function(e){ console.warn('conn err',e&&e.message); hostDrop(conn); });
+}
+function hostDrop(conn){
+  var i=NET.conns.indexOf(conn); if(i>=0) NET.conns.splice(i,1);
+  if(MODE!=='host') return;
+  var seat=seatByConn(conn);
+  if(!seat) return;
+  seat.connected=false; seat.conn=null;
+  if(!NET.started){
+    var k=PL.indexOf(seat);
+    if(k>0) PL.splice(k,1);
+    PL.forEach(function(p,n){p.idx=n;});
+    pushLobby();
+  }else{
+    toast(seat.name+' หลุดการเชื่อมต่อ — บอทจะเล่นแทนชั่วคราว');
+    if(S) pushViews();
+  }
+  AUD.sfx('leave');
+}
+function uniqueName(n){ var base=n,k=2; while(PL.some(function(p){return p.name===n;})){ n=base+' '+k; k++; } return n; }
+function onHostMsg(conn,m){
+  if(!m||!m.t||MODE!=='host') return;
+  if(m.t==='hello'){
+    var name=String(m.name||'ผู้เล่น').trim().slice(0,12)||'ผู้เล่น';
+    var seat=null;
+    for(var i=0;i<PL.length;i++){
+      if(PL[i].kind==='remote'&&PL[i].name===name&&(NET.started||PL[i].connected===false)){ seat=PL[i]; break; }
+    }
+    if(seat){ /* same-name reconnect */
+      var old=seat.conn;
+      seat.conn=conn; seat.connected=true; seat._rx=Date.now();
+      if(old&&old!==conn){ try{old.close();}catch(e){} }
+      NET.send(conn,{t:'welcome',you:seat.idx,code:NET.code,name:seat.name,started:NET.started});
+      if(NET.started&&S) pushViews(); else pushLobby();
+      toast(seat.name+' กลับเข้าตลาดแล้ว ✅');
+      AUD.sfx('join');
+      return;
+    }
+    if(NET.started){ NET.send(conn,{t:'deny',reason:'เกมเริ่มไปแล้ว'}); setTimeout(function(){try{conn.close();}catch(e){}},400); return; }
+    if(PL.length>=5){ NET.send(conn,{t:'deny',reason:'ห้องเต็มแล้ว (5 คน)'}); setTimeout(function(){try{conn.close();}catch(e){}},400); return; }
+    name=uniqueName(name);
+    var p=newSeat(PL.length,name,'remote',conn); p._rx=Date.now();
+    PL.push(p);
+    NET.send(conn,{t:'welcome',you:p.idx,code:NET.code,name:name,started:false});
+    pushLobby();
+    toast(name+' เข้าร่วมห้องแล้ว 🎉');
+    AUD.sfx('join');
+    return;
+  }
+  if(m.t==='pong'){ var s0=seatByConn(conn); if(s0){ s0._rx=Date.now(); if(!s0.connected){ s0.connected=true; if(NET.started&&S)pushViews(); else pushLobby(); } } return; }
+  if(m.t==='pick'){
+    var s=seatByConn(conn); if(!s||!S||S.phase!=='select') return;
+    if(S.picks[s.idx]) return;
+    var pk=validatePick(s,m.ids,!!m.chop);
+    if(!pk){ NET.send(conn,{t:'rej'}); return; }
+    if(pendingPick[s.idx]){ var r=pendingPick[s.idx]; delete pendingPick[s.idx]; r(pk); }
+    return;
+  }
+  if(m.t==='bye'){ hostDrop(conn); return; }
+}
+function startHostHeartbeat(){
+  if(NET.hb) clearInterval(NET.hb);
+  NET.hb=setInterval(function(){
+    if(MODE!=='host'){ clearInterval(NET.hb); NET.hb=null; return; }
+    NET.bcast({t:'ping'});
+    var now=Date.now(),changed=false;
+    PL.forEach(function(p){
+      if(p.kind!=='remote')return;
+      if(p.connected&&p._rx&&now-p._rx>14000){ p.connected=false; changed=true; }
+    });
+    if(changed){ if(NET.started&&S) pushViews(); else pushLobby(); }
+  },4000);
+}
+/* ---------- CLIENT ---------- */
+async function clientJoin(){
+  AUD.sfx('tap');
+  var code=($('#inCode').value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  var name=($('#inName').value||'').trim().slice(0,12)||'ผู้เล่น';
+  if(code.length!==5){ netStatus('❌ กรุณากรอกรหัสห้อง 5 ตัว',true); AUD.sfx('err'); return; }
+  netStatus('<span class="spin"></span> กำลังเชื่อมต่อ...');
+  var ok=await ensurePeer();
+  if(!ok){ netStatus('❌ โหลดระบบออนไลน์ไม่สำเร็จ — เล่นโหมดออฟไลน์แทนได้เลย',true); AUD.sfx('err'); return; }
+  NET.reset();
+  NET.myName=name; NET.code=code;
+  netStatus('<span class="spin"></span> กำลังเชื่อมต่อห้อง '+code+'...');
+  connectToHost(code,name,false);
+}
+function connectToHost(code,name,isRetry){
+  var peer=null,settled=false,to=null;
+  function fail(msg){
+    if(settled) return; settled=true; clearTimeout(to);
+    try{ if(peer) peer.destroy(); }catch(e){}
+    if(NET.peer===peer) NET.peer=null;
+    if(isRetry){ if(MODE==='client') clientLost(); return; }
+    netStatus(msg,true); AUD.sfx('err');
+  }
+  to=setTimeout(function(){ fail('❌ เชื่อมต่อไม่สำเร็จ (หมดเวลา) — ตรวจสอบรหัสห้องอีกครั้ง'); },16000);
+  try{ peer=new window.Peer({debug:0}); }
+  catch(e){ fail('❌ '+e.message); return; }
+  NET.peer=peer;
+  peer.on('open',function(){
+    var conn;
+    try{ conn=peer.connect(hostId(code),{reliable:true}); }
+    catch(e){ fail('❌ '+e.message); return; }
+    conn.on('open',function(){
+      if(settled)return; settled=true; clearTimeout(to);
+      NET.hostConn=conn; NET.lastRx=Date.now();
+      MODE='client';
+      NET.send(conn,{t:'hello',name:NET.myName||name});
+      netStatus('');
+      startClientWatch();
+    });
+    conn.on('data',function(m){ if(NET.hostConn!==conn)return; NET.lastRx=Date.now(); try{ onClientMsg(m); }catch(e){ console.error('client msg',e); } });
+    conn.on('close',function(){ if(NET.hostConn===conn) clientLost(); });
+    conn.on('error',function(e){ console.warn('client conn err',e&&e.message); });
+  });
+  peer.on('error',function(err){
+    var type=err&&err.type;
+    console.warn('[peer client]',type,err&&err.message);
+    if(!settled) fail(type==='peer-unavailable'?'❌ ไม่พบห้องนี้ — ตรวจสอบรหัสอีกครั้ง':'❌ ผิดพลาด: '+(type||'unknown'));
+  });
+}
+function startClientWatch(){
+  if(NET.watch) clearInterval(NET.watch);
+  NET.watch=setInterval(function(){
+    if(MODE!=='client'){ clearInterval(NET.watch); NET.watch=null; return; }
+    if(NET.hostConn&&Date.now()-NET.lastRx>16000) clientLost();
+  },3000);
+}
+function clientLost(){
+  if(MODE!=='client') return;
+  var hc=NET.hostConn; NET.hostConn=null;
+  try{ if(hc) hc.close(); }catch(e){}
+  try{ if(NET.peer) NET.peer.destroy(); }catch(e){}
+  NET.peer=null;
+  if(NET.retry>=3){ toast('การเชื่อมต่อหลุด — กลับสู่เมนู'); goMenu(); return; }
+  NET.retry++;
+  NET.lastRx=Date.now();
+  lobHint('<span class="spin"></span> การเชื่อมต่อหลุด กำลังเชื่อมต่อใหม่ ('+NET.retry+'/3)...',true);
+  toast('การเชื่อมต่อหลุด กำลังลองใหม่ ('+NET.retry+'/3)');
+  var code=NET.code,name=NET.myName;
+  setTimeout(function(){ if(MODE==='client'&&!NET.hostConn) connectToHost(code,name,true); },1200+NET.retry*800);
+}
+function onClientMsg(m){
+  if(!m||!m.t) return;
+  if(m.t==='ping'){ NET.send(NET.hostConn,{t:'pong'}); return; }
+  if(m.t==='welcome'){
+    NET.myIdx=m.you; NET.code=m.code; NET.myName=m.name||NET.myName; NET.retry=0;
+    if(!m.started){
+      showScreen('lobby');
+      $('#lobTitle').textContent='ห้อง '+m.code;
+      lobHint('<span class="spin"></span> รอเจ้าบ้านเริ่มเกม...');
+    } else toast('กลับเข้าเกมแล้ว ✅');
+    AUD.sfx('join');
+    return;
+  }
+  if(m.t==='deny'){
+    var reason=m.reason||'เข้าห้องไม่ได้';
+    MODE='local'; NET.reset(); showScreen('menu'); setTab('on');
+    netStatus('❌ '+reason,true); toast(reason);
+    return;
+  }
+  if(m.t==='lobby'){
+    NET.myIdx=m.you;
+    if(!$('#lobby').classList.contains('show')) showScreen('lobby');
+    renderLobby(m.players,m.code,m.you,false);
+    return;
+  }
+  if(m.t==='view'){
+    V=m.v; V.isHost=false;
+    if(!$('#game').classList.contains('show')){ showScreen('game'); lastPhase=''; }
+    renderView();
+    return;
+  }
+  if(m.t==='rej'){ toast('ไพ่ที่เลือกไม่ถูกต้อง ลองใหม่อีกครั้ง'); AUD.sfx('err'); if(V&&V.phase==='select'){ V.canPick=true; renderView(); } return; }
+  if(m.t==='end'){ toast('เจ้าบ้านปิดห้องแล้ว'); goMenu(); return; }
+}
+
+/* ======================================================
+   9) SCREENS + EVENTS
+   ====================================================== */
+function showScreen(n){
+  ['menu','lobby','game'].forEach(function(s){ $('#'+s).classList.toggle('show',s===n); });
+  if(n!=='game'){ ['#ovRound','#ovFinal','#ovHandoff'].forEach(function(s){ $(s).classList.remove('show'); }); }
+}
+function setTab(t){
+  Array.prototype.forEach.call($('#tabs').querySelectorAll('button'),function(x){ x.classList.toggle('on',x.getAttribute('data-tab')===t); });
+  $('#tabOff').style.display=(t==='off')?'flex':'none';
+  $('#tabOn').style.display=(t==='on')?'flex':'none';
+}
+function buildSegs(){
+  $('#segPlayers').innerHTML=[2,3,4,5].map(function(n){
+    return '<button type="button" data-n="'+n+'" class="'+(CFG.players===n?'on':'')+'">'+n+'</button>'; }).join('');
+  var a=[]; for(var i=1;i<=CFG.players;i++)a.push(i);
+  $('#segHumans').innerHTML=a.map(function(n){
+    return '<button type="button" data-h="'+n+'" class="'+(CFG.humans===n?'on':'')+'">'+n+'</button>'; }).join('');
+}
+$('#segPlayers').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-n]'); if(!b)return;
+  CFG.players=parseInt(b.getAttribute('data-n'),10);
+  if(CFG.humans>CFG.players)CFG.humans=CFG.players;
+  AUD.sfx('tap'); buildSegs();
+});
+$('#segHumans').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-h]'); if(!b)return;
+  CFG.humans=parseInt(b.getAttribute('data-h'),10);
+  AUD.sfx('tap'); buildSegs();
+});
+$('#tabs').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-tab]'); if(!b)return;
+  AUD.sfx('tap'); setTab(b.getAttribute('data-tab'));
+});
+$('#btnStart').addEventListener('click',function(){
+  AUD.sfx('confirm');
+  MODE='local'; NET.reset();
+  var bn=shuffle(BOT_NAMES.slice());
+  PL=[];
+  for(var i=0;i<CFG.players;i++){
+    var bot=i>=CFG.humans;
+    PL.push(newSeat(i,bot?(bn[i%bn.length]+BOT_TAG):('ผู้เล่น '+(i+1)),bot?'bot':'human',null));
+  }
+  startMatch();
+});
+$('#btnCreate').addEventListener('click',function(){ hostCreate(); });
+$('#btnJoin').addEventListener('click',function(){ clientJoin(); });
+$('#inCode').addEventListener('input',function(){ this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5); });
+$('#inCode').addEventListener('keydown',function(e){ if(e.key==='Enter') clientJoin(); });
+
+function copyText(txt,okMsg){
+  var done=function(){ toast(okMsg); AUD.sfx('tap'); };
+  if(navigator.clipboard&&navigator.clipboard.writeText&&window.isSecureContext){
+    navigator.clipboard.writeText(txt).then(done).catch(function(){ fallbackCopy(txt,done); });
+  } else fallbackCopy(txt,done);
+}
+function fallbackCopy(txt,cb){
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    var ok=document.execCommand('copy'); ta.remove();
+    if(ok) cb(); else toast('คัดลอกเอง: '+txt,6000);
+  }catch(e){ toast('คัดลอกเอง: '+txt,6000); }
+}
+$('#btnCopyCode').addEventListener('click',function(){ if(NET.code) copyText(NET.code,'คัดลอกรหัสห้องแล้ว ✅'); });
+$('#btnCopyLink').addEventListener('click',function(){
+  if(!NET.code)return;
+  var base=(location.origin&&location.origin!=='null')?location.origin+location.pathname:location.href.split('?')[0].split('#')[0];
+  copyText(base+'?room='+NET.code,'คัดลอกลิงก์เชิญแล้ว ✅');
+});
+$('#btnAddBot').addEventListener('click',function(){
+  if(MODE!=='host'||NET.started)return;
+  if(PL.length>=5){ toast('ห้องเต็มแล้ว (5 คน)'); AUD.sfx('err'); return; }
+  var used=PL.map(function(p){return p.name;});
+  var pool=BOT_NAMES.filter(function(n){ return used.indexOf(n+BOT_TAG)<0; });
+  var nm=(pool.length?pool[Math.floor(Math.random()*pool.length)]:'บอท'+PL.length)+BOT_TAG;
+  PL.push(newSeat(PL.length,nm,'bot',null));
+  AUD.sfx('join'); pushLobby();
+});
+$('#btnDelBot').addEventListener('click',function(){
+  if(MODE!=='host'||NET.started)return;
+  var removed=false;
+  for(var i=PL.length-1;i>0;i--){ if(PL[i].kind==='bot'){ PL.splice(i,1); removed=true; break; } }
+  if(!removed){ toast('ไม่มีบอทในห้อง'); AUD.sfx('err'); return; }
+  PL.forEach(function(p,n){p.idx=n;});
+  AUD.sfx('leave'); pushLobby();
+});
+$('#btnLobbyStart').addEventListener('click',function(){
+  if(MODE!=='host'||NET.started)return;
+  if(PL.length<2){ toast('ต้องมีผู้เล่นอย่างน้อย 2 คน'); AUD.sfx('err'); return; }
+  if(PL.length>5){ toast('ผู้เล่นได้สูงสุด 5 คน'); AUD.sfx('err'); return; }
+  NET.started=true;
+  AUD.sfx('confirm');
+  startMatch();
+});
+$('#btnLeave').addEventListener('click',function(){ AUD.sfx('tap'); goMenu(); });
+$('#hoBtn').addEventListener('click',function(){ AUD.sfx('tap'); resolveTap(); });
+$('#roundBtn').addEventListener('click',function(){ if(V&&V.isHost&&V.phase==='round'){ AUD.sfx('tap'); resolveTap(); } });
+$('#hand').addEventListener('click',function(e){
+  var el=e.target.closest('.card'); if(!el||!V||!V.canPick) return;
+  var id=el.getAttribute('data-id'); if(!id) return;
+  var need=SEL.chop?2:1, pos=SEL.ids.indexOf(id);
+  if(pos>=0){ SEL.ids.splice(pos,1); AUD.sfx('deselect'); }
+  else{ if(SEL.ids.length>=need) SEL.ids.shift(); SEL.ids.push(id); AUD.sfx('select'); }
+  renderView();
+});
+$('#btnChop').addEventListener('click',function(){
+  if(!V||!V.canChop){ AUD.sfx('err'); return; }
+  SEL.chop=!SEL.chop;
+  if(!SEL.chop&&SEL.ids.length>1) SEL.ids=SEL.ids.slice(0,1);
+  AUD.sfx('tap'); renderView();
+});
+$('#btnConfirm').addEventListener('click',function(){
+  if(!V||!V.canPick) return;
+  var need=SEL.chop?2:1;
+  if(SEL.ids.length!==need){ AUD.sfx('err'); return; }
+  if(MODE==='client'){
+    if(!NET.hostConn||!NET.hostConn.open){ toast('ยังไม่ได้เชื่อมต่อกับเจ้าบ้าน'); AUD.sfx('err'); return; }
+    NET.send(NET.hostConn,{t:'pick',ids:SEL.ids.slice(),chop:SEL.chop});
+    AUD.sfx('confirm');
+    V.canPick=false; V.canChop=false;
+    renderView();
+    return;
+  }
+  var p=S?S.players[(MODE==='local'?S.viewer:0)]:null;
+  var pk=validatePick(p,SEL.ids,SEL.chop);
+  if(!pk){ AUD.sfx('err'); toast('เลือกไพ่ไม่ถูกต้อง'); return; }
+  if(humanRes){ AUD.sfx('confirm'); var r=humanRes; humanRes=null; r(pk); }
+});
+$('#btnAgain').addEventListener('click',function(){
+  if(!V||!V.isHost) return;
+  AUD.sfx('confirm');
+  $('#ovFinal').classList.remove('show');
+  startMatch();
+});
+$('#btnMenu').addEventListener('click',function(){ AUD.sfx('tap'); goMenu(); });
+$('#btnQuit').addEventListener('click',function(){ AUD.sfx('tap'); goMenu(); });
+function goMenu(){
+  TOKEN++;
+  if(humanRes){ var r=humanRes; humanRes=null; r(null); }
+  if(tapRes){ var t=tapRes; tapRes=null; t(null); }
+  pendingPick={};
+  if(MODE==='host') NET.bcast({t:'end'});
+  else if(MODE==='client') NET.send(NET.hostConn,{t:'bye'});
+  var m=MODE;
+  MODE='local';
+  setTimeout(function(){ if(MODE==='local') NET.reset(); }, m==='local'?0:150); // let goodbye flush
+  S=null; V=null; PL=[]; lastPhase=''; SEL={ids:[],chop:false};
+  lobHint('');
+  showScreen('menu');
+  buildSegs();
+}
+function openRules(){ AUD.sfx('tap'); $('#ovRules').classList.add('show'); }
+$('#btnRules').addEventListener('click',openRules);
+$('#btnRulesG').addEventListener('click',openRules);
+$('#rulesClose').addEventListener('click',function(){ AUD.sfx('tap'); $('#ovRules').classList.remove('show'); });
+$('#ovRules').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
+
+function syncAudio(){
+  $('#btnMusicM').textContent='♪ เพลง: '+(AUD.musicOn?'เปิด':'ปิด');
+  $('#btnSfxM').textContent=(AUD.sfxOn?'🔊':'🔇')+' เสียง: '+(AUD.sfxOn?'เปิด':'ปิด');
+  $('#btnMusicG').classList.toggle('off',!AUD.musicOn);
+  $('#btnSfxG').classList.toggle('off',!AUD.sfxOn);
+  $('#btnSfxG').textContent=AUD.sfxOn?'🔊':'🔇';
+}
+function tMusic(){ AUD.unlock(); AUD.setMusic(!AUD.musicOn); syncAudio(); AUD.sfx('tap'); }
+function tSfx(){ AUD.unlock(); AUD.setSfx(!AUD.sfxOn); syncAudio(); AUD.sfx('tap'); }
+$('#btnMusicM').addEventListener('click',tMusic);
+$('#btnSfxM').addEventListener('click',tSfx);
+$('#btnMusicG').addEventListener('click',tMusic);
+$('#btnSfxG').addEventListener('click',tSfx);
+window.addEventListener('beforeunload',function(){
+  try{ if(MODE==='host')NET.bcast({t:'end'}); else if(MODE==='client')NET.send(NET.hostConn,{t:'bye'}); }catch(e){}
+});
+
+/* ======================================================
+   10) CANVAS FX (frangipani petals + confetti)
+   ====================================================== */
+(function petals(){
+  var cv=$('#petals'); if(!cv||!cv.getContext)return;
+  var ctx=cv.getContext('2d'),W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2),ps=[],run=true;
+  function rs(){ W=window.innerWidth;H=window.innerHeight;cv.width=Math.floor(W*dpr);cv.height=Math.floor(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function mk(y){ return {x:Math.random()*W,y:y===undefined?Math.random()*H:y,r:3+Math.random()*5,k:Math.random()<.55?0:1,
+    sp:.25+Math.random()*.6,dr:(Math.random()-.5)*.5,a:Math.random()*6.28,va:(Math.random()-.5)*.03,o:.22+Math.random()*.45}; }
+  rs();
+  var n=window.innerWidth<520?13:22;
+  for(var i=0;i<n;i++) ps.push(mk());
+  window.addEventListener('resize',rs);
+  document.addEventListener('visibilitychange',function(){ var was=run; run=!document.hidden; if(run&&!was)requestAnimationFrame(loop); });
+  function loop(){
+    if(!run)return;
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<ps.length;i++){
+      var p=ps[i];
+      p.y+=p.sp; p.x+=p.dr+Math.sin(p.a)*.4; p.a+=p.va;
+      if(p.y>H+12){ ps[i]=mk(-12); continue; }
+      if(p.x<-14)p.x=W+12; if(p.x>W+14)p.x=-12;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.globalAlpha=p.o;
+      var g=ctx.createLinearGradient(-p.r,-p.r,p.r,p.r);
+      if(p.k===0){ g.addColorStop(0,'#fffaf0'); g.addColorStop(1,'#ffd77a'); }
+      else{ g.addColorStop(0,'#ffdcea'); g.addColorStop(1,'#ff9ebb'); }
+      ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(0,0,p.r,p.r*.56,0,0,6.2832); ctx.fill(); ctx.restore();
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+var confetti=(function(){
+  var cv=$('#fx'); if(!cv||!cv.getContext) return function(){};
+  var ctx=cv.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2),W=0,H=0,ps=[],anim=null;
+  function rs(){ W=window.innerWidth;H=window.innerHeight;cv.width=Math.floor(W*dpr);cv.height=Math.floor(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0); }
+  window.addEventListener('resize',rs); rs();
+  var COL=['#ffc861','#ff7d6d','#7fe0c0','#ffb3cd','#fff5e6','#ff9a3c'];
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=ps.length-1;i>=0;i--){
+      var p=ps[i];
+      p.vy+=.16; p.x+=p.vx; p.y+=p.vy; p.a+=p.va;
+      if(p.y>H+20){ ps.splice(i,1); continue; }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    }
+    if(ps.length){ anim=requestAnimationFrame(loop); } else { ctx.clearRect(0,0,W,H); anim=null; }
+  }
+  return function(){
+    rs();
+    for(var i=0;i<110;i++){
+      ps.push({x:W*.5+(Math.random()-.5)*W*.5,y:H*.28+(Math.random()-.5)*60,
+        vx:(Math.random()-.5)*7,vy:-4-Math.random()*6,w:5+Math.random()*7,h:7+Math.random()*9,
+        a:Math.random()*6.28,va:(Math.random()-.5)*.3,c:COL[Math.floor(Math.random()*COL.length)]});
+    }
+    if(!anim) anim=requestAnimationFrame(loop);
+  };
+})();
+
+/* ======================================================
+   11) BOOT
+   ====================================================== */
+(function decor(){
+  try{
+    $('#logoArt').innerHTML=artSVG('mango');
+    var cols=['#ff7d6d','#ffc861','#7fe0c0','#ffb3cd','#9fb4ff'],h='';
+    for(var i=0;i<28;i++) h+='<i style="background:'+cols[i%cols.length]+'"></i>';
+    $('#bunting').innerHTML=h;
+  }catch(e){ console.warn('decor',e); }
+})();
+buildSegs(); syncAudio();
+(function autofill(){
+  try{
+    var q=new URLSearchParams(location.search).get('room')||
+          (location.hash.indexOf('room=')>=0?location.hash.split('room=')[1]:'');
+    if(q){
+      q=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5);
+      if(q.length===5){
+        $('#inCode').value=q;
+        setTab('on');
+        netStatus('พบรหัสห้องจากลิงก์: <b>'+q+'</b> — ใส่ชื่อแล้วกด "เข้าร่วมห้อง"');
+      }
+    }
+  }catch(e){ console.warn('autofill',e); }
+})();
+(function selfCheck(){
+  try{
+    var total=DECK_SPEC.reduce(function(a,b){return a+b[1];},0);
+    var ok=[
+      total===108,
+      scoreTypes(['krok','krok','moping','moping','moping'])===15,
+      scoreTypes(['prik','kaprao'])===9,
+      scoreTypes(['kaprao','prik'])===3,
+      scoreTypes(['lukchup','lukchup','lukchup'])===6,
+      scoreTypes(['lukchup','lukchup','lukchup','lukchup','lukchup','lukchup'])===15,
+      teaScores([['tea3'],['tea2'],['tea1']]).join()==='6,3,0',
+      teaScores([['tea3'],['tea3'],['tea1']]).join()==='3,3,0',
+      teaScores([['tea3'],['tea1'],['tea1']]).join()==='6,1,1',
+      mangoScores([3,0,1],3).join()==='6,-6,0',
+      mangoScores([2,0],2).join()==='6,0',
+      mangoScores([1,1,1],3).join()==='0,0,0',
+      Object.keys(ART).every(function(k){return !!CARDS[k];})&&Object.keys(CARDS).every(function(k){return !!ART[k];})
+    ];
+    var bad=ok.map(function(v,i){return v?null:i;}).filter(function(v){return v!==null;});
+    console.log('[AROI] self-check '+(bad.length?'FAILED tests: '+bad.join(','):'passed ('+ok.length+' tests)'));
+  }catch(e){ console.warn('selfcheck',e); }
+})();
+})();
+</script>
+</body>
+</html>
